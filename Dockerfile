@@ -33,7 +33,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ /app/
 
 # Copy the built React assets from Stage 1 into the backend's static folder
-COPY --from=frontend-builder /app/frontend/dist /app/app/static
+COPY --from=frontend-builder /app/backend/app/static /app/app/static
+
 
 # Expose port
 EXPOSE 8000
