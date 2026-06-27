@@ -36,8 +36,6 @@ COPY backend/ /app/
 COPY --from=frontend-builder /app/backend/app/static /app/app/static
 
 
-# Expose port
-EXPOSE 8000
 
 # Run the app
 CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
