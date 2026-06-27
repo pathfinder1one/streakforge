@@ -48,7 +48,7 @@ def get_analytics(
         .group_by(Target.category)
         .all()
     )
-    by_category = [CategoryStat(category=row[0].value, count=row[1]) for row in category_query]
+    by_category = [CategoryStat(category=row[0].value if hasattr(row[0], 'value') else row[0], count=row[1]) for row in category_query]
 
     # Stats by Priority
     priority_query = (
@@ -61,7 +61,7 @@ def get_analytics(
         .group_by(Target.priority)
         .all()
     )
-    by_priority = [PriorityStat(priority=row[0].value, count=row[1]) for row in priority_query]
+    by_priority = [PriorityStat(priority=row[0].value if hasattr(row[0], 'value') else row[0], count=row[1]) for row in priority_query]
     # Best Time of Day
     best_time_query = (
         db.query(
@@ -195,7 +195,10 @@ def get_weekly_analytics(
         .order_by(func.count(TargetSession.id).desc())
         .first()
     )
-    best_category = best_cat_query[0].value if best_cat_query else None
+    
+    best_category = None
+    if best_cat_query and best_cat_query[0]:
+        best_category = best_cat_query[0].value if hasattr(best_cat_query[0], 'value') else best_cat_query[0]
 
     return {
         "period": "weekly",
