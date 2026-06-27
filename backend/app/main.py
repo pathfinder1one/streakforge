@@ -66,7 +66,10 @@ if os.path.isdir(STATIC_DIR):
         if full_path and os.path.isfile(candidate):
             return FileResponse(candidate)
         # Otherwise fall back to index.html so React Router can handle the route.
-        return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+        index_file = os.path.join(STATIC_DIR, "index.html")
+        if os.path.isfile(index_file):
+            return FileResponse(index_file)
+        return {"status": "ok", "message": "Backend is running, but frontend build (index.html) is missing"}
 else:
     @app.get("/")
     def root():
