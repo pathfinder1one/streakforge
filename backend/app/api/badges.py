@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, extract
 
 from app.core.database import get_db
 from app.core.deps import get_current_user
@@ -40,7 +40,7 @@ def get_badges(
         .filter(
             Target.user_id == current_user.id,
             TargetSession.completed == True,
-            func.strftime('%H', TargetSession.started_at) < '07',
+            extract('hour', TargetSession.started_at) < 7,
         )
         .scalar()
     ) or 0
@@ -52,7 +52,7 @@ def get_badges(
         .filter(
             Target.user_id == current_user.id,
             TargetSession.completed == True,
-            func.strftime('%H', TargetSession.started_at) >= '23',
+            extract('hour', TargetSession.started_at) >= 23,
         )
         .scalar()
     ) or 0

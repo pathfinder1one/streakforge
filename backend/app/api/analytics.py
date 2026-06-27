@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime, timezone
 from fastapi import APIRouter, Depends
-from sqlalchemy import func
+from sqlalchemy import func, extract
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -65,7 +65,7 @@ def get_analytics(
     # Best Time of Day
     best_time_query = (
         db.query(
-            func.strftime('%H', TargetSession.started_at).label("hour"),
+            extract('hour', TargetSession.started_at).label("hour"),
             func.count(TargetSession.id).label("count")
         )
         .join(Target)
