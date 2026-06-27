@@ -1,0 +1,73 @@
+import os
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+from app.core.database import Base, engine
+from app.core.config import settings
+from app import models  # noqa: F401 - ensures models are registered before create_all
+from app.api import (
+    auth, profile, targets, dashboard, streak, history,
+    analytics, badges, ai, calendar, squads, leaderboard,
+    notifications, shop, ml,
+)
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title=settings.app_name)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth.router, prefix="/api")
+app.include_router(profile.router, prefix="/api")
+app.include_router(targets.router, prefix="/api")
+app.include_router(dashboard.router, prefix="/api")
+app.include_router(streak.router, prefix="/api")
+app.include_router(history.router, prefix="/api")
+app.include_router(analytics.router, prefix="/api")
+app.include_router(badges.router, prefix="/api")
+app.include_router(ai.router, prefix="/api")
+app.include_router(calendar.router, prefix="/api")
+app.include_router(squads.router, prefix="/api")
+app.include_router(leaderboard.router, prefix="/api")
+app.include_router(notifications.router, prefix="/api")
+app.include_router(shop.router, prefix="/api")
+app.include_router(ml.router, prefix="/api")
+
+
+@app.get("/api/health")
+def health():
+    return {"status": "healthy"}
+
+
+# Serve the built React frontend (app/static)
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "..", "uploads")
+AVATARS_DIR = os.path.join(UPLOADS_DIR, "avatars")
+
+os.makedirs(AVATARS_DIR, exist_ok=True)
+app.mount("/avatars", StaticFiles(directory=AVATARS_DIR), name="avatars")
+
+if os.path.isdir(STATIC_DIR):
+    app.mount("/assets", StaticFiles(directory=os.path.join(STATIC_DIR, "assets")), name="assets")
+
+    @app.get("/{full_path:path}")
+    def serve_frontend(full_path: str):
+        # Let any real file in static/ (e.g. favicon) be served directly.
+        candidate = os.path.join(STATIC_DIR, full_path)
+        if full_path and os.path.isfile(candidate):
+            return FileResponse(candidate)
+        # Otherwise fall back to index.html so React Router can handle the route.
+        return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+else:
+    @app.get("/")
+    def root():
+        return {"status": "ok", "app": settings.app_name, "note": "Frontend not built yet"}

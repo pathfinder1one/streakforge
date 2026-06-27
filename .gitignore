@@ -1,0 +1,16 @@
+# Backend
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.db
+backend/.env
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo
+
+# Note: backend/app/static/ (built frontend) is intentionally NOT ignored
+# so the project runs out of the box with a single `uvicorn` command.
+
+# OS
+.DS_Store
