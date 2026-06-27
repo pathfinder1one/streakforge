@@ -49,18 +49,32 @@ async def upload_avatar(
     if ext not in allowed_extensions:
         raise HTTPException(status_code=400, detail="Invalid image format")
 
-    # Ensure directory exists
-    avatar_dir = os.path.join(os.path.dirname(__file__), "..", "..", "uploads", "avatars")
-    os.makedirs(avatar_dir, exist_ok=True)
+    from app.core.config import settings
 
-    # Save file
-    filename = f"user_{current_user.id}{ext}"
-    filepath = os.path.join(avatar_dir, filename)
-    with open(filepath, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    if settings.cloudinary_url:
+        import cloudinary.uploader
+        try:
+            result = cloudinary.uploader.upload(
+                file.file,
+                public_id=f"streakforge/user_{current_user.id}",
+                overwrite=True
+            )
+            avatar_url = result.get("secure_url")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Cloudinary upload failed: {str(e)}")
+    else:
+        # Fallback to local storage if Cloudinary is not configured
+        avatar_dir = os.path.join(os.path.dirname(__file__), "..", "..", "uploads", "avatars")
+        os.makedirs(avatar_dir, exist_ok=True)
+
+        filename = f"user_{current_user.id}{ext}"
+        filepath = os.path.join(avatar_dir, filename)
+        with open(filepath, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        avatar_url = f"/avatars/{filename}"
 
     # Update DB
-    avatar_url = f"/avatars/{filename}"
     current_user.avatar_url = avatar_url
     db.commit()
 

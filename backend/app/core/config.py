@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24 * 7  # 7 days
     gemini_api_key: str = ""  # Set in .env: GEMINI_API_KEY=your_key
+    cloudinary_url: str = ""  # Set in .env: CLOUDINARY_URL=cloudinary://...
     cors_origins: list[str] = ["*"]  # In production, set CORS_ORIGINS='["https://yourdomain.com"]'
 
     class Config:
