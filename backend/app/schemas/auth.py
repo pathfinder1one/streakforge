@@ -37,3 +37,7 @@ class UserProfile(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ProfileUpdate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)

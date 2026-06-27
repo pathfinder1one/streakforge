@@ -4,10 +4,27 @@ import Button from '@/components/common/Button'
 import api from '@/services/api'
 import toast from 'react-hot-toast'
 import { useSettingsStore } from '@/store/settingsStore'
+import { useAuthStore } from '@/store/authStore'
 
 export default function Settings() {
   const [isExporting, setIsExporting] = useState(false)
   const { soundEnabled, toggleSound, notificationsEnabled, toggleNotifications } = useSettingsStore()
+  const { user, updateProfile } = useAuthStore()
+  const [name, setName] = useState(user?.name || '')
+  const [isSavingName, setIsSavingName] = useState(false)
+
+  const handleSaveName = async () => {
+    if (!name.trim()) return
+    setIsSavingName(true)
+    try {
+      await updateProfile(name)
+      toast.success('Profile updated successfully!')
+    } catch (error) {
+      toast.error('Failed to update profile')
+    } finally {
+      setIsSavingName(false)
+    }
+  }
 
   const handleExportData = async () => {
     setIsExporting(true)
@@ -36,6 +53,29 @@ export default function Settings() {
       </div>
 
       <div className="space-y-6">
+        {/* Profile */}
+        <section className="bg-base-900/60 backdrop-blur-xl border border-base-800/60 rounded-2xl p-6">
+          <h2 className="text-lg font-semibold text-ash-100 mb-4">Profile</h2>
+          
+          <div className="flex items-end gap-4 mb-2">
+            <div className="flex-1">
+              <label className="block text-ash-200 font-medium mb-1">Display Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your Name"
+                className="w-full py-2 px-3 bg-base-950 border border-base-800 rounded-lg focus:outline-none focus:border-ember-500 text-ash-100"
+              />
+            </div>
+            <Button onClick={handleSaveName} disabled={isSavingName || name === user?.name} className="flex items-center gap-2">
+              <Save className="w-4 h-4" />
+              {isSavingName ? 'Saving...' : 'Save'}
+            </Button>
+          </div>
+          <p className="text-ash-400 text-sm">This is the name that will appear on the leaderboard.</p>
+        </section>
+
         {/* Preferences */}
         <section className="bg-base-900/60 backdrop-blur-xl border border-base-800/60 rounded-2xl p-6">
           <h2 className="text-lg font-semibold text-ash-100 mb-4">Preferences</h2>

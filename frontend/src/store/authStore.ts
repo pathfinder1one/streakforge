@@ -11,6 +11,7 @@ interface AuthState {
   register: (name: string, email: string, password: string) => Promise<void>
   logout: () => void
   fetchProfile: () => Promise<void>
+  updateProfile: (name: string) => Promise<void>
   init: () => Promise<void>
 }
 
@@ -52,6 +53,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   fetchProfile: async () => {
     const profile = await authService.getProfile()
     set({ user: profile })
+  },
+
+  updateProfile: async (name: string) => {
+    set({ isLoading: true })
+    try {
+      const profile = await authService.updateProfile({ name })
+      set({ user: profile })
+    } finally {
+      set({ isLoading: false })
+    }
   },
 
   init: async () => {

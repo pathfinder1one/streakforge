@@ -118,6 +118,19 @@ export default function AuthPage() {
           )}
 
           <form className="flex flex-col gap-4" onSubmit={handleRegister}>
+            {!isLogin && (
+              <div>
+                <label className="block text-sm mb-2 text-gray-700">Your name</label>
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="John Doe"
+                  className="text-sm w-full py-2.5 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 bg-white"
+                />
+              </div>
+            )}
             <div>
               <label className="block text-sm mb-2 text-gray-700">Your email</label>
               <input

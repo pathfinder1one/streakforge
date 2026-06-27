@@ -24,6 +24,11 @@ export async function getProfile(): Promise<UserProfile> {
   return data
 }
 
+export async function updateProfile(payload: { name: string }): Promise<UserProfile> {
+  const { data } = await api.put<UserProfile>('/user/profile', payload)
+  return data
+}
+
 export async function uploadAvatar(file: File): Promise<{avatar_url: string}> {
   const formData = new FormData()
   formData.append('file', file)
