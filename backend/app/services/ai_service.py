@@ -1,4 +1,4 @@
-﻿"""
+"""
 AI Service — Google Gemini integration for StreakForge.
 Falls back to smart mock responses if no API key is configured,
 so the app works perfectly in demo mode.
@@ -39,10 +39,14 @@ async def _call_gemini(contents: list[dict], system_prompt: str = "") -> str:
     url = f"{GEMINI_API_URL}?key={settings.gemini_api_key}"
 
     async with httpx.AsyncClient(timeout=30) as client:
-        resp = await client.post(url, headers=headers, json=payload)
-        resp.raise_for_status()
-        data = resp.json()
-        return data["candidates"][0]["content"]["parts"][0]["text"]
+        try:
+            resp = await client.post(url, headers=headers, json=payload)
+            resp.raise_for_status()
+            data = resp.json()
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+        except Exception as e:
+            print(f"Gemini API Error: {e}")
+            return ""
 
 
 # ---------------------------------------------------------------------------
