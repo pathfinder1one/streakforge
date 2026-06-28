@@ -21,6 +21,14 @@ def start_session(db: Session, user: User, target_id: int) -> TargetSession:
 
     today = user_local_today(user.tz_offset_minutes)
 
+    active_session = (
+        db.query(TargetSession)
+        .filter(TargetSession.target_id == target.id, TargetSession.ended_at == None)
+        .first()
+    )
+    if active_session:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="An active session already exists for this target.")
+
     session = TargetSession(
         target_id=target.id,
         started_at=datetime.now(timezone.utc),

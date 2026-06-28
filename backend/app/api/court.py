@@ -32,6 +32,9 @@ def create_pledge(
     if existing:
         raise HTTPException(status_code=400, detail="Active contract already exists for this target")
         
+    if current_user.coins < data.pledge_amount:
+        raise HTTPException(status_code=400, detail="Insufficient coins for this pledge")
+        
     contract = Contract(
         user_id=current_user.id,
         target_id=data.target_id,

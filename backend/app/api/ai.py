@@ -134,7 +134,7 @@ async def ai_chat(
                     db.commit()
                     executed_commands.append(ExecutedCommand(action=action, detail=f"Burned {amount} coins. Reason: {cmd.get('reason', '')}"))
             elif action == "renegotiate_target" and tid:
-                new_time = int(cmd.get("new_minimum_time", 0))
+                new_time = max(1, int(cmd.get("new_minimum_time", 1)))
                 target = db.query(Target).filter(Target.id == tid, Target.user_id == current_user.id).first()
                 if target:
                     target.minimum_time = new_time

@@ -108,6 +108,19 @@ def close_out_day_and_update_streak(db: Session, user: User, target_date: date) 
     """
     success = evaluate_day(db, user, target_date)
     
+    # Process breached contracts
+    from app.models.contract import Contract
+    active_targets = get_active_targets_for_today(db, user, target_date)
+    for t in active_targets:
+        if not is_target_completed_today(db, t.id, target_date):
+            contracts = db.query(Contract).filter(
+                Contract.target_id == t.id,
+                Contract.status == "active"
+            ).all()
+            for contract in contracts:
+                contract.status = "breached"
+
+
     # Incremental update instead of full history recalculation
     # This allows users to retain "purchased" streak freezes without them getting wiped.
     if success:

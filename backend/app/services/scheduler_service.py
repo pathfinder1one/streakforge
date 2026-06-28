@@ -104,54 +104,6 @@ async def _send_nudges_job():
         logger.error(f"Nudge scheduler job error: {e}")
 
 
-async def _check_breached_contracts_job():
-    """
-    Daily job at 23:55: find all active contracts. If the associated target
-    was not completed today, mark the contract as breached.
-    """
-    try:
-        from app.core.database import SessionLocal
-        from app.models.contract import Contract
-        from app.models.target import Target
-        
-        db = SessionLocal()
-        try:
-            active_contracts = db.query(Contract).filter(Contract.status == "active").all()
-            for contract in active_contracts:
-                # Check if target is completed today
-                target = db.query(Target).filter(Target.id == contract.target_id).first()
-                if target and target.is_active:
-                    # In a real app we'd check TargetSession for today's date in user's timezone
-                    # Here we can use a simpler heuristic or just check the target's internal state
-                    # But since target state (is_completed_today) is calculated dynamically in frontend,
-                    # we must query sessions.
-                    from app.models.target_session import TargetSession
-                    from app.utils.date_utils import user_local_today
-                    from app.models.user import User
-                    
-                    user = db.query(User).filter(User.id == contract.user_id).first()
-                    if not user:
-                        continue
-                        
-                    today = user_local_today(user.tz_offset_minutes)
-                    session_today = db.query(TargetSession).filter(
-                        TargetSession.target_id == target.id,
-                        TargetSession.session_date == today,
-                        TargetSession.completed == True
-                    ).first()
-                    
-                    if not session_today:
-                        contract.status = "breached"
-                        logger.info(f"Contract {contract.id} breached for target {target.id}")
-            
-            db.commit()
-            logger.info(f"Breached contracts job completed at {datetime.now(timezone.utc)}")
-        finally:
-            db.close()
-    except Exception as e:
-        logger.error(f"Breach check scheduler job error: {e}")
-
-
 def start_scheduler():
     """Start the APScheduler with all background jobs."""
     if not scheduler.running:
@@ -162,15 +114,8 @@ def start_scheduler():
             replace_existing=True,
             misfire_grace_time=300,
         )
-        scheduler.add_job(
-            _check_breached_contracts_job,
-            trigger=CronTrigger(hour=23, minute=55),
-            id="breached_contracts",
-            replace_existing=True,
-            misfire_grace_time=300,
-        )
         scheduler.start()
-        logger.info("APScheduler started — registered jobs: proactive_nudges, breached_contracts")
+        logger.info("APScheduler started — registered jobs: proactive_nudges")
 
 
 def stop_scheduler():
