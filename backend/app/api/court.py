@@ -1,4 +1,4 @@
-﻿from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 import json
@@ -90,8 +90,7 @@ def court_judge(
 
     genai.configure(api_key=settings.gemini_api_key)
     model = genai.GenerativeModel("gemini-2.5-flash")
-    
-    prompt = f\"\"\"
+    prompt = f"""
     You are The Judge, an AI in an accountability app called StreakForge.
     The user pledged {contract.pledge_amount} coins to complete their daily target: "{contract.target.title}".
     They FAILED to complete it.
@@ -110,7 +109,7 @@ def court_judge(
       "coins_deducted": <integer between 0 and {contract.pledge_amount}>,
       "message": "<your response as The Judge, in character. Be stern but fair. Explain your ruling.>"
     }}
-    \"\"\"
+    """
     
     try:
         response = model.generate_content(prompt)
