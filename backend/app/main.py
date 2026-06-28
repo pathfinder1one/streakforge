@@ -16,30 +16,24 @@ from app.api import (
 )
 from sqlalchemy import text
 
-# Auto-migrate missing columns for SQLite deployments
+# Auto-migrate missing columns for SQLite/Postgres deployments
 def apply_migrations():
-    with engine.connect() as conn:
-        # Add user_persona to users
+    is_sqlite = "sqlite" in str(engine.url)
+    bool_default = "0" if is_sqlite else "false"
+    
+    migrations = [
+        "ALTER TABLE users ADD COLUMN user_persona VARCHAR",
+        f"ALTER TABLE users ADD COLUMN is_demo BOOLEAN DEFAULT {bool_default} NOT NULL",
+        "ALTER TABLE targets ADD COLUMN deadline_date DATETIME",
+        "ALTER TABLE ai_conversations ADD COLUMN target_id INTEGER"
+    ]
+    
+    for query in migrations:
         try:
-            conn.execute(text("ALTER TABLE users ADD COLUMN user_persona VARCHAR"))
+            with engine.begin() as conn:
+                conn.execute(text(query))
         except Exception:
             pass
-        # Add is_demo to users
-        try:
-            conn.execute(text("ALTER TABLE users ADD COLUMN is_demo BOOLEAN DEFAULT 0 NOT NULL"))
-        except Exception:
-            pass
-        # Add deadline_date to targets
-        try:
-            conn.execute(text("ALTER TABLE targets ADD COLUMN deadline_date DATETIME"))
-        except Exception:
-            pass
-        # Add target_id to ai_conversations
-        try:
-            conn.execute(text("ALTER TABLE ai_conversations ADD COLUMN target_id INTEGER"))
-        except Exception:
-            pass
-        conn.commit()
 
 apply_migrations()
 Base.metadata.create_all(bind=engine)
