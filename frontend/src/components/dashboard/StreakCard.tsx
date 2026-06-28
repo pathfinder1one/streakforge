@@ -14,7 +14,7 @@ export default function StreakCard({ currentStreak, longestStreak, streakFreezes
     <motion.div
       whileHover={{ scale: 1.02 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className="relative overflow-hidden rounded-[24px] bg-[#f4ebe1] border border-white/50 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(234,63,12,0.1)] transition-all duration-300 group"
+      className="relative overflow-hidden rounded-2xl bg-base-900/60 backdrop-blur-xl border border-ember-500/20 p-6 shadow-[0_0_40px_rgba(234,63,12,0.15)] group"
     >
       {/* Animated glow orbs */}
       <div className="absolute -right-8 -top-8 w-40 h-40 bg-ember-500/20 rounded-full blur-3xl animate-pulse" />
@@ -23,17 +23,17 @@ export default function StreakCard({ currentStreak, longestStreak, streakFreezes
       {/* Header */}
       <div className="relative flex items-start justify-between mb-4">
         <div>
-          <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Streak Stats</p>
+          <p className="text-ember-500/80 text-[10px] font-bold uppercase tracking-widest mb-1">Current Streak</p>
           <div className="flex items-baseline gap-1.5">
             <motion.span
               key={currentStreak}
               initial={{ scale: 1.3, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="font-display font-bold text-4xl text-slate-800"
+              className="font-display font-bold text-5xl text-transparent bg-clip-text bg-gradient-to-br from-ember-400 to-red-600"
             >
               {currentStreak}
             </motion.span>
-            <span className="text-slate-500 text-lg font-semibold">days</span>
+            <span className="text-ash-400 text-lg font-medium">days</span>
           </div>
         </div>
         <motion.div
@@ -46,7 +46,7 @@ export default function StreakCard({ currentStreak, longestStreak, streakFreezes
 
       {/* Progress bar toward next milestone */}
       <div className="relative mb-4">
-        <div className="w-full bg-[#e8dbcf] rounded-full h-2.5 overflow-hidden">
+        <div className="w-full bg-base-950 border border-base-800 rounded-full h-1.5 overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${Math.min(100, (currentStreak % 10) * 10)}%` }}
@@ -54,21 +54,21 @@ export default function StreakCard({ currentStreak, longestStreak, streakFreezes
             className="h-full bg-ember-gradient rounded-full"
           />
         </div>
-        <p className="text-[10px] text-slate-400 mt-1.5 font-medium">{10 - (currentStreak % 10)} more days to next milestone</p>
+        <p className="text-[10px] text-ash-500 mt-1">{10 - (currentStreak % 10)} more days to next milestone</p>
       </div>
 
       {/* Footer stats */}
-      <div className="relative flex items-center justify-between border-t border-[#e8dbcf] pt-4 gap-2">
+      <div className="relative flex items-center justify-between border-t border-base-800 pt-3 gap-2">
         <div className="flex items-center gap-2">
           <Trophy className="w-4 h-4 text-ember-500/70 shrink-0" />
-          <span className="text-slate-500 text-xs font-semibold">
-            Longest: <span className="font-bold text-slate-800">{longestStreak} days</span>
+          <span className="text-ash-400 text-xs">
+            Best: <span className="font-bold text-ash-100">{longestStreak} days</span>
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <Snowflake className="w-4 h-4 text-blue-400/80 shrink-0" />
-          <span className="text-slate-500 text-xs font-semibold">
-            Freezes: <span className="font-bold text-slate-800">{streakFreezes}/3</span>
+          <span className="text-ash-400 text-xs">
+            Freezes: <span className="font-bold text-ash-100">{streakFreezes}/3</span>
           </span>
         </div>
       </div>

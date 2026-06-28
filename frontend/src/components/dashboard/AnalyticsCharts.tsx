@@ -24,15 +24,15 @@ export default function AnalyticsCharts() {
         whileHover={{ scale: 1.02, y: -2 }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 bg-[#f4ebe1] border border-white/50 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(234,63,12,0.1)]"
+        className="rounded-2xl border p-6 shadow-sm transition-all duration-300 bg-gradient-to-br from-base-950 to-base-900 border-ember-500/20 border hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(234,63,12,0.15)] hover:border-ember-500/50"
       >
         <div className="flex items-center gap-2 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-[#e8dbcf] flex items-center justify-center">
-            <PieChartIcon className="w-4 h-4 text-ember-500" />
+          <div className="w-8 h-8 rounded-lg bg-base-800 flex items-center justify-center">
+            <PieChartIcon className="w-4 h-4 text-ash-300" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-800">By Category</h3>
-            <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest mt-0.5">Distribution of all targets</p>
+            <h3 className="text-sm font-semibold text-ash-100">By Category</h3>
+            <p className="text-[10px] text-ash-500">Distribution of all targets</p>
           </div>
         </div>
 
@@ -75,15 +75,15 @@ export default function AnalyticsCharts() {
         whileHover={{ scale: 1.02, y: -2 }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 bg-[#f4ebe1] border border-white/50 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(234,63,12,0.1)]"
+        className="rounded-2xl border p-6 shadow-sm transition-all duration-300 bg-gradient-to-br from-base-950 to-base-900 border-ember-500/20 border hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(234,63,12,0.15)] hover:border-ember-500/50"
       >
         <div className="flex items-center gap-2 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-[#e8dbcf] flex items-center justify-center">
-            <Target className="w-4 h-4 text-ember-500" />
+          <div className="w-8 h-8 rounded-lg bg-base-800 flex items-center justify-center">
+            <Target className="w-4 h-4 text-ash-300" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-800">By Priority</h3>
-            <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest mt-0.5">How you prioritize your goals</p>
+            <h3 className="text-sm font-semibold text-ash-100">By Priority</h3>
+            <p className="text-[10px] text-ash-500">How you prioritize your goals</p>
           </div>
         </div>
 

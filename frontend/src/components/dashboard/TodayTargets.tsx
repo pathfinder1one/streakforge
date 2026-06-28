@@ -88,12 +88,12 @@ function TargetRow({ target, onChange }: { target: Target; onChange: () => void 
       whileHover={{ scale: 1.01, y: -2 }}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`relative overflow-hidden rounded-[20px] transition-all duration-300 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/40 mb-3 ${
+      className={`relative overflow-hidden rounded-2xl border transition-all duration-300 ${
         isDone
-          ? 'bg-[#e8dccb] opacity-70'
+          ? 'bg-base-900/40 border-base-800/50'
           : isRunning
-          ? 'bg-[#fcf8f5] shadow-[0_0_20px_rgba(234,63,12,0.1)] ring-1 ring-ember-500/30'
-          : 'bg-[#f4ebe1]'
+          ? 'bg-base-900 border-ember-600/50 shadow-[0_0_20px_rgba(234,63,12,0.1)]'
+          : 'bg-base-900 border-base-800 hover:border-base-700'
       }`}
     >
       {/* Running pulse top border */}
@@ -120,17 +120,12 @@ function TargetRow({ target, onChange }: { target: Target; onChange: () => void 
 
           <div className="flex-1 min-w-0">
             {/* Title row */}
-              <div className="flex items-center gap-3 flex-wrap mb-1">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
               {(() => {
                 const Icon = categoryIcon[target.category] || TargetIcon
-                // Give each icon a soft colorful background pill
-                return (
-                  <div className="w-10 h-10 rounded-xl bg-[#e8dbcf] flex items-center justify-center shrink-0">
-                    <Icon className="w-5 h-5 text-ember-500" strokeWidth={1.5} />
-                  </div>
-                )
+                return <Icon className="w-4 h-4 text-ash-400 shrink-0" />
               })()}
-              <h4 className={`font-semibold text-[15px] ${isDone ? 'text-slate-400 line-through' : 'text-slate-800'}`}>
+              <h4 className={`font-medium text-sm ${isDone ? 'text-ash-500 line-through' : 'text-ash-100'}`}>
                 {target.title}
               </h4>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${cfg.cls}`}>
