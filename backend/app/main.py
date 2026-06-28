@@ -1,4 +1,5 @@
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,12 +12,31 @@ from app import models  # noqa: F401 - ensures models are registered before crea
 from app.api import (
     auth, profile, targets, dashboard, streak, history,
     analytics, badges, ai, calendar, squads, leaderboard,
-    notifications, shop, ml,
+    notifications, shop, ml, court
 )
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title=settings.app_name)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    try:
+        from app.services.scheduler_service import start_scheduler
+        start_scheduler()
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(f"Scheduler could not start: {e}")
+    yield
+    # Shutdown
+    try:
+        from app.services.scheduler_service import stop_scheduler
+        stop_scheduler()
+    except Exception:
+        pass
+
+
+app = FastAPI(title=settings.app_name, lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,6 +61,7 @@ app.include_router(leaderboard.router, prefix="/api")
 app.include_router(notifications.router, prefix="/api")
 app.include_router(shop.router, prefix="/api")
 app.include_router(ml.router, prefix="/api")
+app.include_router(court.router, prefix="/api")
 
 
 @app.get("/api/health")

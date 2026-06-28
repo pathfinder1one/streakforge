@@ -20,3 +20,35 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     user = authenticate_user(db, data)
     token = create_token_for_user(user)
     return TokenResponse(access_token=token)
+
+
+@router.post("/demo", response_model=TokenResponse)
+def create_demo_user(db: Session = Depends(get_db)):
+    """Feature 8: Create a demo user for quick showcase."""
+    import string
+    import random
+    from app.models.user import User
+    from app.core.security import hash_password
+    
+    code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    demo_email = f"demo_{code.lower()}@streakforge.app"
+    
+    user = User(
+        name="Demo User",
+        email=demo_email,
+        password_hash=hash_password("demopassword123"),
+        tz_offset_minutes=0,
+        referral_code=code,
+        is_demo=True,
+        user_persona="study", # default persona
+        coins=100,
+        xp=50,
+        level=2,
+    )
+    
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    
+    token = create_token_for_user(user)
+    return TokenResponse(access_token=token)

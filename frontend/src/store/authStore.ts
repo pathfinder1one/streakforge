@@ -8,6 +8,7 @@ interface AuthState {
   isLoading: boolean
   isInitialized: boolean
   login: (email: string, password: string) => Promise<void>
+  loginDemo: () => Promise<void>
   register: (name: string, email: string, password: string) => Promise<void>
   logout: () => void
   fetchProfile: () => Promise<void>
@@ -25,6 +26,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true })
     try {
       const res = await authService.login({ email, password })
+      localStorage.setItem('streakforge_token', res.access_token)
+      set({ token: res.access_token })
+      await get().fetchProfile()
+    } finally {
+      set({ isLoading: false })
+    }
+  },
+
+  loginDemo: async () => {
+    set({ isLoading: true })
+    try {
+      const res = await authService.loginDemo()
       localStorage.setItem('streakforge_token', res.access_token)
       set({ token: res.access_token })
       await get().fetchProfile()

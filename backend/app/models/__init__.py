@@ -6,6 +6,8 @@ from app.models.history import DailyHistory
 from app.models.squad import Squad, SquadMember, SquadRoleEnum
 from app.models.notification import Notification, NotificationTypeEnum
 from app.models.shop import ShopItem, UserPurchase, ShopItemTypeEnum
+from app.models.ai_conversation import AIConversation
+from app.models.contract import Contract
 
 __all__ = [
     "User",
@@ -26,5 +28,7 @@ __all__ = [
     "ShopItem",
     "UserPurchase",
     "ShopItemTypeEnum",
+    "AIConversation",
+    "Contract",
 ]
 

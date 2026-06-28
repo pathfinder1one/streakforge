@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import get_current_user
-from app.models.user import User
+from app.models.user import User, MoodLog
 from app.models.target import Target
 from app.models.target_session import TargetSession
 from app.models.history import DailyHistory
@@ -335,3 +335,91 @@ async def ai_insights(
 
     recs = await ai_service.get_recommendations(user_context)
     return {"insights": recs, "generated_at": datetime.now(timezone.utc).isoformat()}
+
+
+# ---------------------------------------------------------------------------
+# Feature 3: Mood -> Performance Correlation
+# ---------------------------------------------------------------------------
+
+@router.get("/analytics/mood-correlation")
+def get_mood_correlation(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Correlates mood scores with daily habit completion rates.
+    Returns insight like: 'When your mood is 2/5, streak breaks 80% of the time.'
+    """
+    MOOD_SCORES = {"Great": 5, "Good": 4, "Okay": 3, "Bad": 2, "Awful": 1}
+
+    # Get all mood logs for the user
+    mood_logs = (
+        db.query(MoodLog)
+        .filter(MoodLog.user_id == current_user.id)
+        .all()
+    )
+
+    if not mood_logs:
+        return {
+            "data": [],
+            "insight": "Not enough mood data yet. Log your mood daily for personalized insights!",
+            "has_data": False,
+        }
+
+    # Get daily history for completion data
+    daily_history = (
+        db.query(DailyHistory)
+        .filter(DailyHistory.user_id == current_user.id)
+        .all()
+    )
+    history_by_date = {
+        h.date.date() if hasattr(h.date, 'date') else h.date: h
+        for h in daily_history
+    }
+
+    # Aggregate: for each mood level, compute completion rate
+    mood_data: dict[int, dict] = {}
+    for log in mood_logs:
+        score = MOOD_SCORES.get(log.mood, 3)
+        log_date = log.date.date() if hasattr(log.date, 'date') else log.date
+        history = history_by_date.get(log_date)
+
+        if score not in mood_data:
+            mood_data[score] = {"total": 0, "completed": 0, "mood_label": log.mood}
+
+        mood_data[score]["total"] += 1
+        if history and history.targets_completed > 0:
+            mood_data[score]["completed"] += 1
+
+    result = []
+    worst_completion_rate = 1.0
+    worst_mood_label = ""
+
+    for score in sorted(mood_data.keys()):
+        d = mood_data[score]
+        rate = d["completed"] / d["total"] if d["total"] > 0 else 0
+        result.append({
+            "mood_score": score,
+            "mood_label": d["mood_label"],
+            "completion_rate": round(rate, 2),
+            "sample_count": d["total"],
+        })
+        if rate < worst_completion_rate and d["total"] >= 2:
+            worst_completion_rate = rate
+            worst_mood_label = d["mood_label"]
+
+    # Generate insight text
+    if worst_mood_label:
+        fail_pct = int((1 - worst_completion_rate) * 100)
+        insight = (
+            f"When your mood is '{worst_mood_label}', your streak breaks {fail_pct}% of the time. "
+            f"On those days, try completing just ONE small habit to maintain momentum."
+        )
+    else:
+        insight = "Keep logging your mood to unlock deeper performance insights!"
+
+    return {
+        "data": result,
+        "insight": insight,
+        "has_data": len(result) > 0,
+    }

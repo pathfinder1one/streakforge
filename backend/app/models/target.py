@@ -62,7 +62,10 @@ class Target(Base):
     
     # Feature #9: Drag & Drop Reordering
     order = Column(Integer, default=0, nullable=False)
-    
+
+    # Feature 7: Deadline field
+    deadline_date = Column(DateTime, nullable=True)
+
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     owner = relationship("User", back_populates="targets")

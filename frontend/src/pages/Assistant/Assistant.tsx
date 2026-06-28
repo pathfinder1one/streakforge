@@ -14,6 +14,8 @@ interface Message {
   suggestedTasks?: SuggestedTask[]
   createdTasks?: boolean
   executedCommands?: ExecutedCommand[]
+  agentName?: string
+  agentType?: string
 }
 
 const QUICK_PROMPTS = [
@@ -44,6 +46,22 @@ export default function Assistant() {
     },
   })
 
+  // Load conversation history on mount
+  useEffect(() => {
+    aiService.getHistory(undefined, 20).then((history) => {
+      if (history && history.length > 0) {
+        const historyMsgs: Message[] = history.map((m) => ({
+          id: `history-${m.id}`,
+          role: m.role as 'user' | 'assistant',
+          content: m.message,
+          agentName: m.agent_name,
+          agentType: m.agent_type,
+        }))
+        setMessages([messages[0], ...historyMsgs])
+      }
+    }).catch(() => { /* ignore if history fails */ })
+  }, [])
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
@@ -69,6 +87,8 @@ export default function Assistant() {
         content: res.message,
         suggestedTasks: res.suggested_tasks?.length ? res.suggested_tasks : undefined,
         executedCommands: res.executed_commands?.length ? res.executed_commands : undefined,
+        agentName: res.agent_name,
+        agentType: res.agent_type,
       }
       setMessages((prev) => [...prev, assistantMsg])
       

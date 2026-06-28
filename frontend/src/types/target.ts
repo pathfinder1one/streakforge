@@ -24,6 +24,7 @@ export interface Target {
   metric_goal: number | null
   metric_logged_today: number
   is_failed_today: boolean
+  deadline_date: string | null
 }
 
 export interface Subtask {
@@ -46,6 +47,7 @@ export interface TargetCreatePayload {
   target_type?: TargetType
   metric_unit?: string | null
   metric_goal?: number | null
+  deadline_date?: string | null
 }
 
 export type TargetUpdatePayload = Partial<TargetCreatePayload> & {

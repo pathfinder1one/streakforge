@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile
 import os
 import shutil
+from pydantic import BaseModel
+from typing import Optional
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -231,5 +233,33 @@ def upgrade_to_pro(
     Mock endpoint to upgrade user to Pro. 
     In a real app, this would use Stripe Checkout.
     """
-    # Assuming there's a is_pro field, or just return success
     return {"message": "Successfully upgraded to StreakForge Pro!"}
+
+
+# ---------------------------------------------------------------------------
+# Feature 9: Onboarding — User Persona Selection
+# ---------------------------------------------------------------------------
+
+VALID_PERSONAS = {"study", "fitness", "coding", "growth", "habits"}
+
+
+class OnboardingRequest(BaseModel):
+    persona: str  # study | fitness | coding | growth | habits
+
+
+@router.post("/onboarding", response_model=UserProfile)
+def set_onboarding_persona(
+    data: OnboardingRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Set user persona during onboarding. Can only be called once (or any time to update)."""
+    if data.persona not in VALID_PERSONAS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid persona. Choose from: {', '.join(VALID_PERSONAS)}"
+        )
+    current_user.user_persona = data.persona
+    db.commit()
+    db.refresh(current_user)
+    return current_user

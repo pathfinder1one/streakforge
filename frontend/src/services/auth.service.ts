@@ -19,6 +19,11 @@ export async function login(payload: LoginPayload): Promise<TokenResponse> {
   return data
 }
 
+export async function loginDemo(): Promise<TokenResponse> {
+  const { data } = await api.post<TokenResponse>('/auth/demo')
+  return data
+}
+
 export async function getProfile(): Promise<UserProfile> {
   const { data } = await api.get<UserProfile>('/user/profile')
   return data

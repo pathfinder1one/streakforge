@@ -38,6 +38,7 @@ class TargetCreate(BaseModel):
     target_type: TargetTypeEnum = TargetTypeEnum.positive
     metric_unit: Optional[str] = None
     metric_goal: Optional[float] = None
+    deadline_date: Optional[datetime] = None
 
 
 class TargetUpdate(BaseModel):
@@ -54,6 +55,7 @@ class TargetUpdate(BaseModel):
     target_type: Optional[TargetTypeEnum] = None
     metric_unit: Optional[str] = None
     metric_goal: Optional[float] = None
+    deadline_date: Optional[datetime] = None
 
 
 class TargetResponse(BaseModel):
@@ -73,6 +75,7 @@ class TargetResponse(BaseModel):
     metric_unit: Optional[str] = None
     metric_goal: Optional[float] = None
     order: int = 0
+    deadline_date: Optional[datetime] = None
 
     # Computed, populated by the service layer for "today"
     seconds_spent_today: int = 0

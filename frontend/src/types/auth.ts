@@ -28,4 +28,7 @@ export interface UserProfile {
   avatar_url?: string
   last_monthly_reward_claim?: string
   tz_offset_minutes: number
+  user_persona?: string
+  is_demo?: boolean
+  referral_code?: string
 }

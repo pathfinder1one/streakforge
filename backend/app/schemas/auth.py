@@ -34,6 +34,8 @@ class UserProfile(BaseModel):
     last_monthly_reward_claim: datetime | None = None
     referral_code: str | None = None
     tz_offset_minutes: int
+    user_persona: str | None = None
+    is_demo: bool = False
 
     class Config:
         from_attributes = True

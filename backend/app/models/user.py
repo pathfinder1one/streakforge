@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -31,6 +31,12 @@ class User(Base):
     last_monthly_reward_claim = Column(DateTime, nullable=True)
     last_spin_date = Column(DateTime, nullable=True)
     referral_code = Column(String, unique=True, index=True, nullable=True)
+
+    # Feature 9: Onboarding persona
+    user_persona = Column(String, nullable=True)  # study|fitness|coding|growth|habits
+
+    # Feature 8: Demo mode flag
+    is_demo = Column(Boolean, default=False, nullable=False)
 
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 

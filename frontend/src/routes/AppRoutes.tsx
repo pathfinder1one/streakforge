@@ -23,6 +23,8 @@ import Shop from '@/pages/Shop/Shop'
 import Analytics from '@/pages/Analytics/Analytics'
 import Settings from '@/pages/Settings/Settings'
 import Planner from '@/pages/Planner/Planner'
+import Onboarding from '@/pages/Onboarding/Onboarding'
+import Court from '@/pages/Court/Court'
 
 export default function AppRoutes() {
   return (
@@ -38,6 +40,10 @@ export default function AppRoutes() {
       </Route>
 
       <Route element={<ProtectedRoute />}>
+        {/* Full screen protected routes */}
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/court" element={<Court />} />
+
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/targets" element={<Targets />} />

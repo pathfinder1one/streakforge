@@ -83,7 +83,13 @@ export default function Targets() {
         </div>
       )}
 
-      {isLoading && <Loader label="Loading targets..." />}
+      {isLoading && (
+        <div className="space-y-4">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="skeleton h-28 w-full rounded-2xl" />
+          ))}
+        </div>
+      )}
 
       {error && (
         <div className="p-4 rounded-xl bg-red-950/30 border border-red-900/50 text-red-300 text-sm mb-4">

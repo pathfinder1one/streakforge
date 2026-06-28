@@ -12,6 +12,7 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(location.pathname === '/login')
   
   const login = useAuthStore((s) => s.login)
+  const loginDemo = useAuthStore((s) => s.loginDemo)
   const register = useAuthStore((s) => s.register)
   const isLoading = useAuthStore((s) => s.isLoading)
 
@@ -51,9 +52,19 @@ export default function AuthPage() {
     setError(null)
     try {
       await register(name || 'User', email, password)
-      navigate('/dashboard')
+      navigate('/onboarding')  // New users go through onboarding first
     } catch (err: any) {
       setError(err?.response?.data?.detail ?? 'Registration failed.')
+    }
+  }
+
+  async function handleDemo() {
+    setError(null)
+    try {
+      await loginDemo()
+      navigate('/dashboard')
+    } catch (err: any) {
+      setError(err?.response?.data?.detail ?? 'Demo login failed.')
     }
   }
 
@@ -175,6 +186,15 @@ export default function AuthPage() {
               {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
               {isLogin ? 'Sign In' : 'Create Account'}
             </button>
+
+            <button
+              type="button"
+              onClick={handleDemo}
+              disabled={isLoading}
+              className="w-full mt-2 bg-gray-900 hover:bg-black text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+            >
+              Try Demo Mode
+            </button>
             
             {/* Feature #31: Google/GitHub OAuth (Mock) */}
             <div className="mt-6">
@@ -255,6 +275,16 @@ export default function AuthPage() {
             >
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Log In"}
             </button>
+
+            <button
+              type="button"
+              onClick={handleDemo}
+              disabled={isLoading}
+              className="w-full mt-2 bg-gray-100 hover:bg-gray-200 text-black font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+            >
+              Try Demo Mode
+            </button>
+
             <div className="text-center text-gray-600 text-sm mt-2 md:hidden">
               Don't have an account? <button type="button" onClick={() => setIsLogin(false)} className="text-black font-medium underline">Sign up</button>
             </div>

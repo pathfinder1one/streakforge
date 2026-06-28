@@ -55,8 +55,8 @@ export default function TargetCard({ target, onDelete }: TargetCardProps) {
             </span>
           </div>
 
-          {(target.scheduled_date || target.alert_time) && (
-            <div className="flex items-center gap-4 text-[11px] text-ash-400 mb-3 bg-base-800/30 inline-flex px-3 py-1.5 rounded-lg">
+          {(target.scheduled_date || target.alert_time || target.deadline_date) && (
+            <div className="flex items-center gap-4 text-[11px] text-ash-400 mb-3 bg-base-800/30 inline-flex px-3 py-1.5 rounded-lg flex-wrap">
               {target.scheduled_date && (
                 <span className="flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5 text-blue-400" />
@@ -64,9 +64,15 @@ export default function TargetCard({ target, onDelete }: TargetCardProps) {
                 </span>
               )}
               {target.alert_time && (
-                <span className="flex items-center gap-1.5 border-l border-base-700 pl-4">
+                <span className={`flex items-center gap-1.5 ${target.scheduled_date ? 'border-l border-base-700 pl-4' : ''}`}>
                   <Bell className="w-3.5 h-3.5 text-amber-400" />
                   {target.alert_time}
+                </span>
+              )}
+              {target.deadline_date && (
+                <span className={`flex items-center gap-1.5 ${(target.scheduled_date || target.alert_time) ? 'border-l border-base-700 pl-4' : ''}`}>
+                  <TargetIcon className="w-3.5 h-3.5 text-red-400" />
+                  Due: {new Date(target.deadline_date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                 </span>
               )}
             </div>

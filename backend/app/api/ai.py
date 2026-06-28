@@ -21,6 +21,7 @@ router = APIRouter(prefix="/ai", tags=["ai"])
 class ChatRequest(BaseModel):
     message: str
     create_suggested_tasks: bool = False
+    target_id: int | None = None  # Optional: scope conversation to a specific target
 
 
 class SuggestedTask(BaseModel):
@@ -40,6 +41,8 @@ class ChatResponse(BaseModel):
     suggested_tasks: List[SuggestedTask] = []
     created_tasks: List[int] = []
     executed_commands: List[ExecutedCommand] = []
+    agent_type: str = "sentinel"
+    agent_name: str = "The Sentinel"
 
 @router.post("/chat", response_model=ChatResponse)
 async def ai_chat(
@@ -76,7 +79,13 @@ async def ai_chat(
         "targets": target_dicts
     }
     
-    result = await ai_service.chat(data.message, user_context)
+    result = await ai_service.chat(
+        data.message,
+        user_context,
+        db=db,
+        user_id=current_user.id,
+        target_id=data.target_id,
+    )
 
     created_ids = []
     if data.create_suggested_tasks and result.get("suggested_tasks"):
@@ -135,7 +144,51 @@ async def ai_chat(
         suggested_tasks=result.get("suggested_tasks", []),
         created_tasks=created_ids,
         executed_commands=executed_commands,
+        agent_type=result.get("agent_type", "sentinel"),
+        agent_name=result.get("agent_name", "The Sentinel"),
     )
+
+
+# --- Conversation History Endpoint ---
+
+class ConversationMessage(BaseModel):
+    id: int
+    role: str
+    message: str
+    agent_type: str
+    agent_name: str
+    created_at: str
+
+
+@router.get("/history", response_model=List[ConversationMessage])
+def get_chat_history(
+    target_id: int | None = None,
+    limit: int = 20,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Get conversation history, optionally filtered by target."""
+    from app.models.ai_conversation import AIConversation
+    from app.services.ai_service import AGENT_PERSONAS
+    from sqlalchemy import desc
+
+    query = db.query(AIConversation).filter(AIConversation.user_id == current_user.id)
+    if target_id is not None:
+        query = query.filter(AIConversation.target_id == target_id)
+
+    msgs = query.order_by(desc(AIConversation.created_at)).limit(limit).all()
+
+    return [
+        ConversationMessage(
+            id=m.id,
+            role=m.role,
+            message=m.message,
+            agent_type=m.agent_type,
+            agent_name=AGENT_PERSONAS.get(m.agent_type, AGENT_PERSONAS["sentinel"])["name"],
+            created_at=m.created_at.isoformat(),
+        )
+        for m in reversed(msgs)
+    ]
 
 
 # ─── Prioritize ───────────────────────────────────────────────────────────────

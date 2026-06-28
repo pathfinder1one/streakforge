@@ -7,6 +7,7 @@ import {
 } from 'recharts'
 import { getWeeklyAnalytics, getMonthlyAnalytics, getAnalytics, exportCalendarICS } from '@/services/analytics.service'
 import ActivityHeatmap from '@/components/dashboard/ActivityHeatmap'
+import MoodCorrelation from '@/components/dashboard/MoodCorrelation'
 
 const ORANGE_SHADES = ['#ea3f0c', '#f05030', '#f56040', '#f87058', '#fba080', '#fdc0a8', '#fed8c8']
 const CATEGORY_COLORS: Record<string, string> = {
@@ -309,6 +310,11 @@ export default function Analytics() {
 
               {/* Render the Dashboard ActivityHeatmap component directly */}
               <ActivityHeatmap />
+              
+              {/* Feature 3: Mood Correlation */}
+              <div className="mt-8">
+                <MoodCorrelation />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
