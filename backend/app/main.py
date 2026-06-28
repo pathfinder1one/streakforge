@@ -14,7 +14,34 @@ from app.api import (
     analytics, badges, ai, calendar, squads, leaderboard,
     notifications, shop, ml, court
 )
+from sqlalchemy import text
 
+# Auto-migrate missing columns for SQLite deployments
+def apply_migrations():
+    with engine.connect() as conn:
+        # Add user_persona to users
+        try:
+            conn.execute(text("ALTER TABLE users ADD COLUMN user_persona VARCHAR"))
+        except Exception:
+            pass
+        # Add is_demo to users
+        try:
+            conn.execute(text("ALTER TABLE users ADD COLUMN is_demo BOOLEAN DEFAULT 0 NOT NULL"))
+        except Exception:
+            pass
+        # Add deadline_date to targets
+        try:
+            conn.execute(text("ALTER TABLE targets ADD COLUMN deadline_date DATETIME"))
+        except Exception:
+            pass
+        # Add target_id to ai_conversations
+        try:
+            conn.execute(text("ALTER TABLE ai_conversations ADD COLUMN target_id INTEGER"))
+        except Exception:
+            pass
+        conn.commit()
+
+apply_migrations()
 Base.metadata.create_all(bind=engine)
 
 
