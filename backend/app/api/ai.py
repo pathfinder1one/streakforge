@@ -176,7 +176,7 @@ def get_chat_history(
     if target_id is not None:
         query = query.filter(AIConversation.target_id == target_id)
 
-    msgs = query.order_by(desc(AIConversation.created_at)).limit(limit).all()
+    msgs = query.order_by(desc(AIConversation.id)).limit(limit).all()
 
     return [
         ConversationMessage(

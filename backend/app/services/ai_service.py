@@ -159,7 +159,7 @@ async def chat(
                 AIConversation.user_id == user_id,
                 AIConversation.target_id == target_id,
             )
-            .order_by(desc(AIConversation.created_at))
+            .order_by(desc(AIConversation.id))
             .limit(10)
             .all()
         )
