@@ -28,7 +28,7 @@ async def _call_gemini(contents: list[dict], system_prompt: str = "") -> str:
         return ""
 
     try:
-        model_name = "gemini-flash-latest"
+        model_name = "gemini-3.5-flash"
         if system_prompt:
             model = genai.GenerativeModel(model_name, system_instruction=system_prompt)
         else:
@@ -393,7 +393,7 @@ async def verify_image(target_title: str, image_bytes: bytes, mime_type: str) ->
     prompt = f"Verify if this image proves the user completed their habit: '{target_title}'. Respond STRICTLY in JSON: {{\"verified\": true/false, \"reason\": \"one sentence\"}}"
 
     try:
-        model = genai.GenerativeModel("gemini-flash-latest")
+        model = genai.GenerativeModel("gemini-3.5-flash")
         
         # Prepare the multimodal content
         image_part = {
