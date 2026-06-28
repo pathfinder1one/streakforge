@@ -9,8 +9,8 @@ from app.models.user import User
 from app.models.target import Target
 from app.models.contract import Contract
 from app.schemas.court import ContractCreate, ContractResponse, CourtPlea, CourtVerdict
-import google.generativeai as genai
 from app.core.config import settings
+from app.services.ai_service import _call_gemini
 
 router = APIRouter(tags=["court"])
 
@@ -74,7 +74,7 @@ def get_breached_contracts(
     return res
 
 @router.post("/court/judge", response_model=CourtVerdict)
-def court_judge(
+async def court_judge(
     data: CourtPlea,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -87,9 +87,7 @@ def court_judge(
     
     if not contract:
         raise HTTPException(status_code=404, detail="Breached contract not found")
-
-    genai.configure(api_key=settings.gemini_api_key)
-    model = genai.GenerativeModel("gemini-2.5-flash")
+    
     prompt = f"""
     You are The Judge, an AI in an accountability app called StreakForge.
     The user pledged {contract.pledge_amount} coins to complete their daily target: "{contract.target.title}".
@@ -112,8 +110,12 @@ def court_judge(
     """
     
     try:
-        response = model.generate_content(prompt)
-        text = response.text.replace("`json", "").replace("`", "").strip()
+        contents = [{"role": "user", "parts": [{"text": prompt}]}]
+        raw = await _call_gemini(contents)
+        if not raw:
+            raise ValueError("Empty response from AI")
+            
+        text = raw.replace("```json", "").replace("```", "").strip()
         result = json.loads(text)
     except Exception as e:
         # Fallback if AI fails
