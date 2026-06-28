@@ -18,31 +18,31 @@ export default function ProgressCard({ completed, total, percentage }: ProgressC
     <motion.div
       whileHover={{ scale: 1.02 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className="relative overflow-hidden rounded-2xl border p-6 transition-all duration-300 bg-base-900/60 backdrop-blur-xl border-ember-500/20 border hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(234,63,12,0.15)] hover:border-ember-500/50 shadow-sm"
+      className="relative overflow-hidden rounded-[24px] p-6 transition-all duration-300 bg-[#f4ebe1] hover:-translate-y-1 hover:scale-[1.01] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(234,63,12,0.1)] border border-white/50"
     >
-      <div className="absolute top-0 right-0 w-32 h-32 bg-ember-500/5 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-ember-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="flex items-center justify-between relative">
         {/* Left: text content */}
         <div className="flex-1">
-          <p className="text-ash-500 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5">
+          <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-1.5">
             <Target className="w-3 h-3 text-ember-500" />
-            Today's Progress
+            XP Progress
           </p>
           <div className="flex items-baseline gap-1.5 mb-3">
             <motion.span
               key={completed}
               initial={{ scale: 1.3, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="font-display font-bold text-4xl text-ash-100"
+              className="font-display font-bold text-3xl text-slate-800"
             >
               {completed}
             </motion.span>
-            <span className="text-ash-500 text-lg">/ {total}</span>
+            <span className="text-slate-500 text-sm font-semibold">/ {total} XP</span>
           </div>
 
           {/* Bar */}
-          <div className="h-2 rounded-full bg-base-800 overflow-hidden w-36">
+          <div className="h-2.5 rounded-full bg-[#e8dbcf] overflow-hidden w-40">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${pct}%` }}
@@ -50,16 +50,15 @@ export default function ProgressCard({ completed, total, percentage }: ProgressC
               className="h-full bg-ember-gradient rounded-full"
             />
           </div>
-          <p className="text-xs text-ash-500 mt-1.5 font-mono">{pct}% complete</p>
         </div>
 
-        {/* Right: circular progress */}
+        {/* Right: circular progress (optional, might remove if sticking purely to the image, but I'll style it to fit) */}
         <div className="shrink-0">
-          <svg width="90" height="90" viewBox="0 0 90 90" className="-rotate-90">
+          <svg width="80" height="80" viewBox="0 0 90 90" className="-rotate-90">
             <circle
               cx="45" cy="45" r={CIRCLE_R}
               fill="none"
-              stroke="rgb(26,24,22)"
+              stroke="#e8dbcf"
               strokeWidth="8"
             />
             <motion.circle
@@ -80,7 +79,7 @@ export default function ProgressCard({ completed, total, percentage }: ProgressC
               </linearGradient>
             </defs>
           </svg>
-          <p className="text-center text-xs font-bold text-ember-400 -mt-2">{pct}%</p>
+          <p className="text-center text-[10px] font-bold text-ember-500 -mt-2.5">{pct}%</p>
         </div>
       </div>
     </motion.div>
