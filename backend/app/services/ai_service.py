@@ -6,13 +6,13 @@ so the app works perfectly in demo mode.
 import json
 import random
 from typing import Any
-
-import httpx
+import google.generativeai as genai
 
 from app.core.config import settings
 
-
-GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+# Initialize Gemini SDK if key is available
+if settings.gemini_api_key:
+    genai.configure(api_key=settings.gemini_api_key)
 
 
 def is_ai_available() -> bool:
@@ -23,34 +23,36 @@ async def _call_gemini(contents: list[dict], system_prompt: str = "") -> str:
     """
     Call Gemini API with multi-turn conversation contents array.
     Each item: {"role": "user"|"model", "parts": [{"text": "..."}]}
-    Returns empty string if no API key (signals mock mode).
     """
     if not settings.gemini_api_key:
         return ""
 
-    headers = {"Content-Type": "application/json"}
-    payload: dict[str, Any] = {
-        "contents": contents,
-        "generationConfig": {"maxOutputTokens": 1024, "temperature": 0.7},
-    }
-    if system_prompt:
-        payload["systemInstruction"] = {"parts": [{"text": system_prompt}]}
-
-    url = f"{GEMINI_API_URL}?key={settings.gemini_api_key}"
-
-    async with httpx.AsyncClient(timeout=30) as client:
-        try:
-            resp = await client.post(url, headers=headers, json=payload)
-            resp.raise_for_status()
-            data = resp.json()
-            return data["candidates"][0]["content"]["parts"][0]["text"]
-        except httpx.HTTPStatusError as e:
-            error_text = e.response.text if hasattr(e, "response") else str(e)
-            print(f"Gemini API Error: {error_text}")
-            return f"SYSTEM ERROR: API Request Failed. Details: {error_text}"
-        except Exception as e:
-            print(f"Gemini API Error: {e}")
-            return f"SYSTEM ERROR: {str(e)}"
+    try:
+        model_name = "gemini-1.5-flash"
+        if system_prompt:
+            model = genai.GenerativeModel(model_name, system_instruction=system_prompt)
+        else:
+            model = genai.GenerativeModel(model_name)
+            
+        # Convert our REST JSON format to SDK format
+        # The SDK expects [{"role": "user", "parts": ["hi"]}] where parts is a list of strings/objects
+        sdk_contents = []
+        for c in contents:
+            sdk_parts = [p["text"] for p in c["parts"] if "text" in p]
+            sdk_contents.append({"role": c["role"], "parts": sdk_parts})
+            
+        resp = await model.generate_content_async(
+            sdk_contents,
+            generation_config=genai.types.GenerationConfig(
+                max_output_tokens=1024,
+                temperature=0.7,
+            )
+        )
+        return resp.text
+    except Exception as e:
+        error_text = str(e)
+        print(f"Gemini API SDK Error: {error_text}")
+        return f"SYSTEM ERROR: API Request Failed. Details: {error_text}"
 
 
 # ---------------------------------------------------------------------------
@@ -384,31 +386,31 @@ async def verify_image(target_title: str, image_bytes: bytes, mime_type: str) ->
 
     prompt = f"Verify if this image proves the user completed their habit: '{target_title}'. Respond STRICTLY in JSON: {{\"verified\": true/false, \"reason\": \"one sentence\"}}"
 
-    headers = {"Content-Type": "application/json"}
-    payload = {
-        "contents": [{
-            "parts": [
-                {"text": prompt},
-                {"inlineData": {"mimeType": mime_type, "data": base64.b64encode(image_bytes).decode("utf-8")}}
-            ]
-        }],
-        "generationConfig": {"maxOutputTokens": 256, "temperature": 0.4},
-    }
-    url = f"{GEMINI_API_URL}?key={settings.gemini_api_key}"
-
-    async with httpx.AsyncClient(timeout=30) as client:
-        try:
-            resp = await client.post(url, headers=headers, json=payload)
-            resp.raise_for_status()
-            data = resp.json()
-            raw = data["candidates"][0]["content"]["parts"][0]["text"]
-            if "```json" in raw:
-                raw = raw.split("```json")[1].split("```")[0]
-            elif "```" in raw:
-                raw = raw.split("```")[1].split("```")[0]
-            return json.loads(raw.strip())
-        except Exception as e:
-            return {"verified": False, "reason": f"AI Verification failed: {str(e)}"}
+    try:
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        
+        # Prepare the multimodal content
+        image_part = {
+            "mime_type": mime_type,
+            "data": image_bytes
+        }
+        
+        resp = await model.generate_content_async(
+            [prompt, image_part],
+            generation_config=genai.types.GenerationConfig(
+                max_output_tokens=256,
+                temperature=0.4,
+            )
+        )
+        
+        raw = resp.text
+        if "```json" in raw:
+            raw = raw.split("```json")[1].split("```")[0]
+        elif "```" in raw:
+            raw = raw.split("```")[1].split("```")[0]
+        return json.loads(raw.strip())
+    except Exception as e:
+        return {"verified": False, "reason": f"AI Verification failed: {str(e)}"}
 
 
 # ---------------------------------------------------------------------------
