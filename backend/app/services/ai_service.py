@@ -44,9 +44,13 @@ async def _call_gemini(contents: list[dict], system_prompt: str = "") -> str:
             resp.raise_for_status()
             data = resp.json()
             return data["candidates"][0]["content"]["parts"][0]["text"]
+        except httpx.HTTPStatusError as e:
+            error_text = e.response.text if hasattr(e, "response") else str(e)
+            print(f"Gemini API Error: {error_text}")
+            return f"SYSTEM ERROR: API Request Failed. Details: {error_text}"
         except Exception as e:
             print(f"Gemini API Error: {e}")
-            return ""
+            return f"SYSTEM ERROR: {str(e)}"
 
 
 # ---------------------------------------------------------------------------
