@@ -51,6 +51,12 @@ async def _call_gemini(contents: list[dict], system_prompt: str = "") -> str:
         return resp.text
     except Exception as e:
         error_text = str(e)
+        if "404" in error_text and "is not found" in error_text:
+            try:
+                available = [m.name for m in genai.list_models() if "generateContent" in m.supported_generation_methods]
+                error_text += f"\n\nAvailable models on your API key: {', '.join(available)}"
+            except Exception:
+                pass
         print(f"Gemini API SDK Error: {error_text}")
         return f"SYSTEM ERROR: API Request Failed. Details: {error_text}"
 
