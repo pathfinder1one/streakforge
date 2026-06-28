@@ -2,6 +2,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTargetStore } from '@/store/targetStore'
 import TargetForm from '@/components/targets/TargetForm'
 import type { TargetCreatePayload } from '@/types/target'
+import { createPledge } from '@/services/court.service'
 
 export default function CreateTarget() {
   const navigate = useNavigate()
@@ -10,7 +11,13 @@ export default function CreateTarget() {
   const addTarget = useTargetStore((s) => s.addTarget)
 
   async function handleSubmit(payload: TargetCreatePayload) {
-    await addTarget(payload)
+    const pledgeAmount = payload.pledge_amount;
+    delete payload.pledge_amount; // Remove it so backend doesn't complain if target API doesn't expect it
+    
+    const target = await addTarget(payload)
+    if (pledgeAmount && pledgeAmount > 0) {
+      await createPledge(target.id, pledgeAmount)
+    }
     navigate('/targets')
   }
 

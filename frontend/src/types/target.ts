@@ -48,6 +48,7 @@ export interface TargetCreatePayload {
   metric_unit?: string | null
   metric_goal?: number | null
   deadline_date?: string | null
+  pledge_amount?: number
 }
 
 export type TargetUpdatePayload = Partial<TargetCreatePayload> & {

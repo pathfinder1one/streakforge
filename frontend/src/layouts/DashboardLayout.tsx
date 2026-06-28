@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
   Flame, LayoutDashboard, ListChecks, History as HistoryIcon,
   User, LogOut, PanelLeftClose, PanelLeftOpen, CalendarDays, Bot,
-  Trophy, Users, ShoppingBag, BarChart3, Settings as SettingsIcon, Calendar
+  Trophy, Users, ShoppingBag, BarChart3, Settings as SettingsIcon, Calendar, Gavel
 } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { useTargetStore } from '@/store/targetStore'
@@ -55,8 +55,16 @@ export default function DashboardLayout() {
     if (user) fetchTargets()
   }, [user, fetchTargets])
 
-  // Calculate pending targets (active ones that are not completed today)
   const pendingTargetsCount = targets.filter((t) => t.is_active && !t.is_completed_today).length
+
+  const [breachedCount, setBreachedCount] = useState(0)
+  useEffect(() => {
+    if (user) {
+      import('@/services/court.service').then(m => {
+        m.getBreachedContracts().then(res => setBreachedCount(res.length)).catch(() => {})
+      })
+    }
+  }, [user])
 
   function handleLogout() {
     logout()
@@ -76,15 +84,26 @@ export default function DashboardLayout() {
       <Onboarding />
 
       {/* Streak freeze warning banner */}
-      {showStreakWarning && (
+      {showStreakWarning && !breachedCount && (
         <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-orange-950 via-red-950 to-orange-950 border-b border-orange-800/50 px-4 py-2 flex items-center justify-center gap-3 text-sm">
           <Flame className="w-4 h-4 text-orange-400 animate-pulse shrink-0" />
           <span className="text-orange-200 font-medium">⚠️ Your streak is at risk! Complete today's targets before midnight.</span>
         </div>
       )}
 
+      {/* Court Summons banner */}
+      {breachedCount > 0 && (
+        <div 
+          onClick={() => navigate('/court')}
+          className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-red-950 via-red-900 to-red-950 border-b border-red-500/50 px-4 py-2 flex items-center justify-center gap-3 text-sm cursor-pointer hover:bg-red-900 transition-colors shadow-[0_0_15px_rgba(220,38,38,0.3)]"
+        >
+          <Gavel className="w-4 h-4 text-red-400 animate-bounce shrink-0" />
+          <span className="text-red-100 font-bold uppercase tracking-wider">Court Summons: You have {breachedCount} breached contract(s). Click to face the Judge.</span>
+        </div>
+      )}
+
       {/* Desktop Sidebar */}
-      <aside className={`hidden md:flex shrink-0 border-r border-base-800/60 flex-col h-screen sticky top-0 transition-all duration-300 ${isCollapsed ? 'w-[72px]' : 'w-64'} ${showStreakWarning ? 'mt-9' : ''} bg-base-950/90 backdrop-blur-xl`}>
+      <aside className={`hidden md:flex shrink-0 border-r border-base-800/60 flex-col h-screen sticky top-0 transition-all duration-300 ${isCollapsed ? 'w-[72px]' : 'w-64'} ${(showStreakWarning || breachedCount > 0) ? 'mt-9' : ''} bg-base-950/90 backdrop-blur-xl`}>
         <div className={`h-16 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between px-4'} border-b border-base-800/60`}>
           {!isCollapsed && (
             <div className="flex items-center gap-2 overflow-hidden">

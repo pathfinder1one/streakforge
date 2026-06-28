@@ -7,8 +7,8 @@ interface TargetState {
   isLoading: boolean
   error: string | null
   fetchTargets: () => Promise<void>
-  addTarget: (payload: TargetCreatePayload) => Promise<void>
-  editTarget: (id: number, payload: TargetUpdatePayload) => Promise<void>
+  addTarget: (payload: TargetCreatePayload) => Promise<Target>
+  editTarget: (id: number, payload: TargetUpdatePayload) => Promise<Target>
   removeTarget: (id: number) => Promise<void>
   reorderTargets: (targetIds: number[]) => Promise<void>
   toggleSubtask: (targetId: number, subtaskId: number) => Promise<void>
@@ -34,11 +34,13 @@ export const useTargetStore = create<TargetState>((set, get) => ({
   addTarget: async (payload) => {
     const target = await targetService.createTarget(payload)
     set({ targets: [target, ...get().targets] })
+    return target
   },
 
   editTarget: async (id, payload) => {
     const updated = await targetService.updateTarget(id, payload)
     set({ targets: get().targets.map((t) => (t.id === id ? updated : t)) })
+    return updated
   },
 
   removeTarget: async (id) => {

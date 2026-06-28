@@ -4,6 +4,7 @@ import { useTargetStore } from '@/store/targetStore'
 import TargetForm from '@/components/targets/TargetForm'
 import Loader from '@/components/common/Loader'
 import type { TargetCreatePayload } from '@/types/target'
+import { createPledge } from '@/services/court.service'
 
 export default function EditTarget() {
   const navigate = useNavigate()
@@ -23,7 +24,19 @@ export default function EditTarget() {
 
   async function handleSubmit(payload: TargetCreatePayload) {
     if (!target) return
+    const pledgeAmount = payload.pledge_amount;
+    delete payload.pledge_amount;
+
     await editTarget(target.id, payload)
+    
+    if (pledgeAmount && pledgeAmount > 0) {
+      try {
+        await createPledge(target.id, pledgeAmount)
+      } catch (e) {
+        console.log('Could not create pledge (might already exist)')
+      }
+    }
+    
     navigate('/targets')
   }
 

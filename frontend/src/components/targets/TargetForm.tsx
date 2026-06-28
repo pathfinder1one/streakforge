@@ -28,6 +28,7 @@ export default function TargetForm({ initial, onSubmit, onCancel, submitLabel = 
   const [metricUnit, setMetricUnit] = useState(initial?.metric_unit ?? '')
   const [metricGoal, setMetricGoal] = useState<string>(initial?.metric_goal?.toString() ?? '')
   const [useMetric, setUseMetric] = useState(!!(initial?.metric_unit))
+  const [pledgeAmount, setPledgeAmount] = useState<number | ''>('')
   
   // AI Suggestion State
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null)
@@ -98,6 +99,7 @@ export default function TargetForm({ initial, onSubmit, onCancel, submitLabel = 
         target_type: targetType,
         metric_unit: useMetric && metricUnit ? metricUnit : null,
         metric_goal: useMetric && metricGoal ? parseFloat(metricGoal) : null,
+        pledge_amount: pledgeAmount ? Number(pledgeAmount) : undefined,
       })
     } catch (err: any) {
       setError(err?.response?.data?.detail ?? 'Something went wrong')
@@ -368,6 +370,29 @@ export default function TargetForm({ initial, onSubmit, onCancel, submitLabel = 
           onChange={(e) => setScheduledDate(e.target.value)}
           className="w-full px-4 py-3 rounded-xl border text-ash-100 placeholder-ash-600 focus:border-ember-500/50 outline-none transition-all text-sm bg-gradient-to-br from-base-950 to-base-900 border-ember-500/20 border hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(234,63,12,0.15)] hover:border-ember-500/50 duration-300 shadow-sm"
         />
+      </div>
+
+      <div className="border border-red-900/30 bg-red-950/10 rounded-2xl p-5 shadow-sm">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-red-500/20 rounded-lg text-red-500">
+            <Flame className="w-5 h-5" />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-red-500">Accountability Court</label>
+            <p className="text-[10px] text-ash-500 mt-0.5">Stake your coins. If you fail to complete this target, you will be taken to Court.</p>
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-widest text-ash-500 mb-2">Stake Coins (optional)</label>
+          <input
+            type="number"
+            min={1}
+            value={pledgeAmount}
+            onChange={(e) => setPledgeAmount(e.target.value === '' ? '' : parseInt(e.target.value, 10))}
+            placeholder="e.g. 50"
+            className="w-full px-4 py-3 rounded-xl border text-ash-100 focus:border-red-500/50 outline-none transition-all text-sm bg-gradient-to-br from-base-950 to-base-900 border-red-500/20 border hover:-translate-y-1 hover:scale-[1.01] hover:border-red-500/50 duration-300 shadow-sm"
+          />
+        </div>
       </div>
 
       <div className="flex items-center gap-3 pt-4 border-t border-base-800">
