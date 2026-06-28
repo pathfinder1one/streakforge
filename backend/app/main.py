@@ -20,11 +20,13 @@ from sqlalchemy import text
 def apply_migrations():
     is_sqlite = "sqlite" in str(engine.url)
     bool_default = "0" if is_sqlite else "false"
+    datetime_type = "DATETIME" if is_sqlite else "TIMESTAMP"
     
     migrations = [
         "ALTER TABLE users ADD COLUMN user_persona VARCHAR",
         f"ALTER TABLE users ADD COLUMN is_demo BOOLEAN DEFAULT {bool_default} NOT NULL",
-        "ALTER TABLE targets ADD COLUMN deadline_date DATETIME",
+        f"ALTER TABLE targets ADD COLUMN deadline_date {datetime_type}",
+        "ALTER TABLE targets ADD COLUMN \"order\" INTEGER DEFAULT 0 NOT NULL",
         "ALTER TABLE ai_conversations ADD COLUMN target_id INTEGER"
     ]
     
