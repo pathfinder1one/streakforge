@@ -32,7 +32,7 @@ def start_session(db: Session, user: User, target_id: int) -> TargetSession:
     return session
 
 
-def end_session(db: Session, user: User, session_id: int, mark_complete: bool) -> TargetSession:
+def end_session(db: Session, user: User, session_id: int, mark_complete: bool, force_complete: bool = False) -> TargetSession:
     session = (
         db.query(TargetSession)
         .join(Target, Target.id == TargetSession.target_id)
@@ -61,7 +61,7 @@ def end_session(db: Session, user: User, session_id: int, mark_complete: bool) -
         total_seconds_today = get_seconds_spent_today(db, target.id, today) + session.duration_seconds
         required_seconds = target.minimum_time * 60
 
-        if total_seconds_today < required_seconds:
+        if total_seconds_today < required_seconds and not force_complete:
             db.commit()
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

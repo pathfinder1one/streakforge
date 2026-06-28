@@ -121,12 +121,14 @@ async def ai_chat(
                 try:
                     # To mark complete autonomously, start and end a 0-sec session
                     sess = timer_service.start_session(db, current_user, tid)
-                    timer_service.end_session(db, current_user, sess.id, True)
+                    timer_service.end_session(db, current_user, sess.id, True, force_complete=True)
                     executed_commands.append(ExecutedCommand(action=action, target_id=tid, detail="Target marked as complete."))
                 except Exception as e:
                     executed_commands.append(ExecutedCommand(action=action, target_id=tid, detail=f"Failed to mark complete: {e}"))
             elif action == "deduct_coins":
                 amount = int(cmd.get("amount", 0))
+                # Hard cap deductions to 10 coins max to prevent the AI from draining the user's balance
+                amount = min(amount, 10)
                 if amount > 0:
                     current_user.coins = max(0, current_user.coins - amount)
                     db.commit()
