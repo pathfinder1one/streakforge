@@ -31,6 +31,41 @@ const navItems = [
   { to: '/settings', icon: SettingsIcon, label: 'Settings' },
 ]
 
+const navGroups = [
+  {
+    title: 'Core Actions',
+    items: [
+      navItems[0], // Dashboard
+      navItems[1], // Targets
+      navItems[5], // Planner
+    ]
+  },
+  {
+    title: 'Insights & Data',
+    items: [
+      navItems[4], // Analytics
+      navItems[6], // Calendar
+      navItems[7], // History
+    ]
+  },
+  {
+    title: 'Community & Rewards',
+    items: [
+      navItems[2], // Squads
+      navItems[3], // Leaderboard
+      navItems[8], // Forge Shop
+    ]
+  },
+  {
+    title: 'Copilot & Account',
+    items: [
+      navItems[9], // AI Assistant
+      navItems[10], // Profile
+      navItems[11], // Settings
+    ]
+  }
+]
+
 export default function DashboardLayout() {
   const navigate = useNavigate()
   const logout = useAuthStore((s) => s.logout)
@@ -151,42 +186,51 @@ export default function DashboardLayout() {
             </div>
           )}
 
-          <div className="space-y-0.5">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                title={isCollapsed ? item.label : undefined}
-                className={({ isActive }) =>
-                  `group relative flex items-center ${isCollapsed ? 'justify-center px-0' : 'justify-between px-3'} py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? 'bg-ember-500/12 text-ember-400 shadow-[0_0_20px_rgba(249,89,26,0.12)] border border-ember-500/25'
-                      : 'text-ash-400 hover:text-ash-100 hover:bg-base-800/60 border border-transparent'
-                  }`
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
-                      {isActive && (
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-ember-500 rounded-r-full shadow-[0_0_8px_rgba(249,89,26,0.8)]" />
-                      )}
-                      <item.icon className={`w-5 h-5 shrink-0 transition-all duration-200 ${isActive ? 'text-ember-400 scale-110 drop-shadow-[0_0_6px_rgba(249,89,26,0.6)]' : 'group-hover:scale-110'}`} />
-                      {!isCollapsed && <span className={isActive ? 'font-semibold' : ''}>{item.label}</span>}
-                    </div>
-                    
-                    {/* Feature #23 - Pending targets badge */}
-                    {item.to === '/targets' && pendingTargetsCount > 0 && !isCollapsed && (
-                      <span className="bg-ember-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center shadow-[0_0_8px_rgba(249,89,26,0.5)]">
-                        {pendingTargetsCount}
-                      </span>
-                    )}
-                    {item.to === '/targets' && pendingTargetsCount > 0 && isCollapsed && (
-                      <span className="absolute top-1.5 right-2 w-2 h-2 bg-ember-500 rounded-full shadow-[0_0_6px_rgba(249,89,26,0.8)]" />
-                    )}
-                  </>
+          <div className="space-y-4">
+            {navGroups.map((group) => (
+              <div key={group.title} className="space-y-0.5">
+                {!isCollapsed && (
+                  <div className="px-3 mb-1.5 text-[10px] font-bold text-ash-500 uppercase tracking-wider">
+                    {group.title}
+                  </div>
                 )}
-              </NavLink>
+                {group.items.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    title={isCollapsed ? item.label : undefined}
+                    className={({ isActive }) =>
+                      `group relative flex items-center ${isCollapsed ? 'justify-center px-0' : 'justify-between px-3'} py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                        isActive
+                          ? 'bg-ember-500/12 text-ember-400 shadow-[0_0_20px_rgba(249,89,26,0.12)] border border-ember-500/25'
+                          : 'text-ash-400 hover:text-ash-100 hover:bg-base-800/60 border border-transparent'
+                      }`
+                    }
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
+                          {isActive && (
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-ember-500 rounded-r-full shadow-[0_0_8px_rgba(249,89,26,0.8)]" />
+                          )}
+                          <item.icon className={`w-5 h-5 shrink-0 transition-all duration-200 ${isActive ? 'text-ember-400 scale-110 drop-shadow-[0_0_6px_rgba(249,89,26,0.6)]' : 'group-hover:scale-110'}`} />
+                          {!isCollapsed && <span className={isActive ? 'font-semibold' : ''}>{item.label}</span>}
+                        </div>
+                        
+                        {/* Feature #23 - Pending targets badge */}
+                        {item.to === '/targets' && pendingTargetsCount > 0 && !isCollapsed && (
+                          <span className="bg-ember-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center shadow-[0_0_8px_rgba(249,89,26,0.5)]">
+                            {pendingTargetsCount}
+                          </span>
+                        )}
+                        {item.to === '/targets' && pendingTargetsCount > 0 && isCollapsed && (
+                          <span className="absolute top-1.5 right-2 w-2 h-2 bg-ember-500 rounded-full shadow-[0_0_6px_rgba(249,89,26,0.8)]" />
+                        )}
+                      </>
+                    )}
+                  </NavLink>
+                ))}
+              </div>
             ))}
           </div>
         </nav>
