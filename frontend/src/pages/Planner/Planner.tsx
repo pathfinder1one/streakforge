@@ -68,8 +68,9 @@ export default function Planner() {
           // Since our backend doesn't fully support specific day scheduling yet,
           // we'll just show Daily targets on every day, and others randomly or conditionally.
           const dayTargets = scheduledTargets.filter(t => {
-            if (t.frequency === 'daily') return true
-            if (t.frequency === 'weekly' && day.getDay() === 1) return true // Show weekly on Mondays
+            const freq = (t.frequency || '').toLowerCase()
+            if (freq === 'daily') return true
+            if (freq === 'weekly' && day.getDay() === 1) return true // Show weekly on Mondays
             return false
           })
 
