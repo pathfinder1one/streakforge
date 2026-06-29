@@ -147,16 +147,15 @@ export default function Calendar() {
 
                 return (
                   <motion.button
-                    whileHover={!isFuture ? { scale: 1.05 } : {}}
-                    whileTap={!isFuture ? { scale: 0.95 } : {}}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     key={day.date}
-                    onClick={() => !isFuture && selectDay(day.date)}
-                    disabled={isFuture}
+                    onClick={() => selectDay(day.date)}
                     className={`relative aspect-square rounded-2xl flex flex-col items-center justify-center transition-all text-sm font-semibold border
                       ${isSelected ? 'border-ember-500 bg-ember-500/10 shadow-[0_0_15px_rgba(234,63,12,0.15)] text-ember-400' : 'border-transparent'}
                       ${isToday && !isSelected ? 'bg-base-800 text-white' : ''}
-                      ${!isFuture && !isToday && !isSelected ? 'bg-base-950 hover:border-base-700 text-ash-300' : ''}
-                      ${isFuture ? 'opacity-20 cursor-not-allowed bg-base-950' : ''}
+                      ${!isToday && !isSelected ? 'bg-base-950 hover:border-base-700 text-ash-300' : ''}
+                      ${isFuture ? 'text-ash-500 opacity-60' : ''}
                     `}
                   >
                     <span className="z-10">{d}</span>
@@ -201,7 +200,7 @@ export default function Calendar() {
                 <CalIcon className="w-8 h-8 text-ash-600" />
               </div>
               <p className="text-base font-semibold text-ash-300">Select a day</p>
-              <p className="text-xs mt-1">Click any past date to see your targets</p>
+              <p className="text-xs mt-1">Click any date to view or schedule targets</p>
             </div>
           ) : isDayLoading ? (
             <div className="flex-1 flex items-center justify-center">
