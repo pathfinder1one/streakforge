@@ -20,10 +20,9 @@ Traditional productivity apps rely on passive notifications that are easy to ign
 
 You don't just create tasks; you pledge virtual coins on them. If you miss your midnight deadline, you suffer a "Contract Breach" and lose your progress. To help you succeed, an onboard Google Gemini AI Copilot acts as your 24/7 mentor—capable of listening via voice, generating structured study/work plans, and autonomously injecting those tasks into your daily schedule.
 
-<!-- 
-![Screenshot Placeholder](./docs/dashboard-preview.png)
-*(Tip: Add a screenshot of your dashboard here later!)* 
--->
+<p align="center">
+  <img src="./docs/dashboard-preview.png" alt="StreakForge Dashboard" width="800" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"/>
+</p>
 
 ---
 
