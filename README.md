@@ -4,7 +4,7 @@
 
 # 🔥 StreakForge
 
-**An AI-Powered Productivity Ecosystem built for the "Last-Minute Life Saver" Hackathon.**
+**An AI-Powered Productivity Ecosystem engineered to defeat procrastination.**
 
 [![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -141,6 +141,6 @@ Navigate to `http://localhost:5173`.
 ---
 
 <div align="center">
-  <h3>✨ Built for the Hackathon ✨</h3>
+  <h3>✨ StreakForge ✨</h3>
   <p>Ready for production deployment on Google Cloud Run.</p>
 </div>
