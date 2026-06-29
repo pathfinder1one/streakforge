@@ -18,12 +18,12 @@
 ---
 
 ## 📖 Table of Contents
-1. [The Psychological Theory (Why it works)](#-the-psychological-theory-why-it-works)
-2. [The Agentic AI Workflow](#-the-agentic-ai-workflow)
-3. [UI/UX Philosophy](#-uiux-philosophy)
-4. [System Architecture](#-system-architecture)
-5. [Project Structure](#-project-structure)
-6. [Quick Start Guide](#-quick-start-guide)
+1. [The Psychological Theory (Why it works)](#the-psychological-theory-why-it-works)
+2. [The Agentic AI Workflow](#the-agentic-ai-workflow)
+3. [UI/UX Philosophy](#uiux-philosophy)
+4. [System Architecture](#system-architecture)
+5. [Project Structure](#project-structure)
+6. [Quick Start Guide](#quick-start-guide)
 
 ---
 
