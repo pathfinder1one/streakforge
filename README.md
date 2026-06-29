@@ -17,19 +17,54 @@
 
 ---
 
-## ⚡ Why StreakForge? (The Innovation)
+## 📖 Table of Contents
+1. [The Psychological Theory (Why it works)](#-the-psychological-theory-why-it-works)
+2. [The Agentic AI Workflow](#-the-agentic-ai-workflow)
+3. [UI/UX Philosophy](#-uiux-philosophy)
+4. [System Architecture](#-system-architecture)
+5. [Project Structure](#-project-structure)
+6. [Quick Start Guide](#-quick-start-guide)
 
-Most productivity tools are passive. You set a task, and you ignore the reminder. 
-**StreakForge is Proactive & High-Stakes.** 
+---
 
-1. **The Accountability Court:** Stake your hard-earned virtual XP/Coins on critical tasks. If you miss the midnight deadline, your smart contract breaches and you lose your progress.
-2. **Deep Agentic AI:** Speak to your AI Copilot. It doesn't just chat—it autonomously parses your goals, estimates time, creates a schedule, and **injects the tasks directly into your PostgreSQL database.**
+## 🧠 The Psychological Theory (Why it works)
+
+Most productivity tools fail because they are fundamentally flawed: they act as passive repositories. When a notification reminds a user to study, the easiest action is to simply swipe it away. There is no consequence.
+
+StreakForge is built on the proven behavioral psychology concept of **Loss Aversion**—the psychological principle that the pain of losing something is twice as powerful as the pleasure of gaining it.
+
+### The Accountability Court
+We digitized Loss Aversion through our "Accountability Court." 
+- When you create a high-priority task, you **pledge your virtual currency (coins & XP)** on it.
+- This creates a **Smart Contract**. If you fail to complete the task before the midnight deadline (computed strictly on your local timezone), the contract breaches.
+- You lose your hard-earned progress. 
+
+By tying real psychological stakes to daily habits, StreakForge transforms procrastination from a harmless habit into an immediate, painful loss, forcing users to take **meaningful action**.
+
+---
+
+## 🤖 The Agentic AI Workflow
+
+StreakForge doesn't just use AI as a generic chatbot; it utilizes **Deep Agentic Workflows** powered by **Google Gemini 3.1 Flash Lite**. The AI is an active participant in the application's ecosystem.
+
+1. **Autonomous Database Injection:** Instead of just giving advice, the AI Copilot takes action. If a user says, *"Help me prepare for my exams next week"*, the AI autonomously breaks down the goal, estimates time, assigns priorities, and outputs a strict JSON payload that the FastAPI backend parses to **inject tasks directly into the user's database.**
+2. **Context-Aware Risk Prediction:** The AI engine acts as a silent guardian. It constantly analyzes a user's historical task completion rates and streak patterns. If the model detects a statistical probability that the user will break their streak today, it triggers a proactive, personalized nudge *before* failure occurs.
+3. **Multi-Persona Routing:** The AI detects context. A coding task routes to *The Compiler* (technical mentor), while a workout routes to *The Coach*, dynamically altering system prompts to provide hyper-relevant guidance.
+
+---
+
+## 🎨 UI/UX Philosophy
+
+A productivity app that is too complex will cause users to abandon it. We designed StreakForge around the principle of **Progressive Disclosure**.
+
+- **Cognitive Overload Prevention:** Advanced analytics (GitHub-style Contribution Heatmaps, multi-axis Mood Trackers, XP progression curves, and AI recommendations) are neatly tucked away behind smooth, collapsible interfaces.
+- **Visual Hierarchy:** When a user opens the dashboard, 90% of the screen focuses purely on their **Immediate Next Action**. High-contrast Ember & Green gradients draw the eye exclusively to the "Start" buttons.
 
 ---
 
 ## 🏗️ System Architecture
 
-GitHub renders the diagram below dynamically to showcase our decoupled, scalable architecture.
+Our decoupled, scalable architecture ensures lightning-fast AI interactions and robust state management.
 
 ```mermaid
 graph TD
@@ -55,16 +90,6 @@ graph TD
     Scheduler["⏰ Lazy Evaluation Engine\n(Timezone Aware)"]:::backend
     Scheduler -. "Evaluates Midnight Breaches" .-> DB
 ```
-
----
-
-## 🔮 Core Agentic Capabilities
-
-| Feature | Description | Google Tech Used |
-| :--- | :--- | :--- |
-| **Autonomous Planning** | Users prompt the AI to plan their day. The AI breaks down tasks, assigns priorities, and injects them straight into the UI/DB. | `Gemini 3.1 Flash Lite` |
-| **Risk Predictor** | Machine learning analyzes historical completion rates. If a user is at risk of breaking a streak, the AI generates a proactive nudge. | `Gemini Data Processing` |
-| **Voice Copilot** | Users can interact with the AI completely hands-free using real-time voice transcription. | `Web Speech API` |
 
 ---
 
