@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent } from 'react'
-import { Plus, X, GripVertical, TrendingUp, BanIcon, Flame } from 'lucide-react'
+import { Plus, X, GripVertical, TrendingUp, BanIcon, Flame, Info } from 'lucide-react'
 import type { Category, Priority, Frequency, TargetType, TargetCreatePayload, Target, Subtask } from '@/types/target'
 import Button from '@/components/common/Button'
 import api from '@/services/api'
@@ -378,7 +378,12 @@ export default function TargetForm({ initial, onSubmit, onCancel, submitLabel = 
             <Flame className="w-5 h-5" />
           </div>
           <div>
-            <label className="block text-sm font-bold text-red-500">Accountability Court</label>
+            <label className="flex items-center gap-1.5 text-sm font-bold text-red-500">
+              Accountability Court
+              <span title="If you stake coins and fail to complete the target, you'll be called to Court. If the Judge doesn't forgive you, you lose the coins! (If you don't stake any, you only lose your streak)." className="cursor-help">
+                <Info className="w-4 h-4 opacity-70 hover:opacity-100 transition-opacity" />
+              </span>
+            </label>
             <p className="text-[10px] text-ash-500 mt-0.5">Stake your coins. If you fail to complete this target, you will be taken to Court.</p>
           </div>
         </div>

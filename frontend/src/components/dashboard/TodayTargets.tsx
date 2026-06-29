@@ -216,9 +216,9 @@ function TargetRow({ target, onChange }: { target: Target; onChange: () => void 
               {!isDone && !isRunning && target.minimum_time > 0 && (
                 <button
                   onClick={handleStart}
-                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-ember-gradient text-white hover:opacity-90 transition-opacity shadow-sm"
+                  className="flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl bg-ember-gradient text-white hover:scale-105 transition-all shadow-[0_0_15px_rgba(234,63,12,0.4)] hover:shadow-[0_0_25px_rgba(234,63,12,0.6)]"
                 >
-                  <Play className="w-3 h-3" fill="white" />
+                  <Play className="w-3.5 h-3.5" fill="white" />
                   {target.link ? 'Open & Start' : 'Start Timer'}
                 </button>
               )}
@@ -239,12 +239,12 @@ function TargetRow({ target, onChange }: { target: Target; onChange: () => void 
                     }
                   }}
                   disabled={isSubmitting}
-                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-green-600 text-white hover:bg-green-500 transition-colors shadow-sm disabled:opacity-50"
+                  className="flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl bg-green-600 text-white hover:bg-green-500 hover:scale-105 transition-all shadow-[0_0_15px_rgba(22,163,74,0.3)] hover:shadow-[0_0_25px_rgba(22,163,74,0.5)] disabled:opacity-50"
                 >
                   {isSubmitting ? (
-                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    <CheckCircle2 className="w-3 h-3" />
+                    <CheckCircle2 className="w-3.5 h-3.5" />
                   )}
                   Mark Complete
                 </button>
@@ -255,18 +255,18 @@ function TargetRow({ target, onChange }: { target: Target; onChange: () => void 
                   <button
                     onClick={() => handleStop(false)}
                     disabled={isSubmitting}
-                    className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-base-800 text-ash-300 hover:bg-base-700 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl bg-base-800 text-ash-300 hover:bg-base-700 transition-colors disabled:opacity-50"
                   >
-                    <Square className="w-3 h-3" />
+                    <Square className="w-3.5 h-3.5" />
                     Pause
                   </button>
                   <button
                     onClick={() => handleStop(true)}
                     disabled={isSubmitting || !canComplete}
-                    className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-green-600 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-green-500 transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl bg-green-600 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-green-500 hover:scale-105 transition-all shadow-[0_0_15px_rgba(22,163,74,0.3)] hover:shadow-[0_0_25px_rgba(22,163,74,0.5)] disabled:hover:scale-100 disabled:shadow-none"
                     title={!canComplete ? `Need ${formatSeconds(requiredSeconds - liveSeconds)} more` : undefined}
                   >
-                    <CheckCircle2 className="w-3 h-3" />
+                    <CheckCircle2 className="w-3.5 h-3.5" />
                     Complete
                   </button>
                 </>
@@ -334,11 +334,14 @@ export default function TodayTargets({ targets, onChange }: TodayTargetsProps) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="rounded-2xl border border-dashed p-12 text-center bg-gradient-to-br from-base-950 to-base-900 border-ember-500/20 border hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_0_20px_rgba(234,63,12,0.15)] hover:border-ember-500/50 transition-all duration-300 shadow-sm"
+        className="rounded-2xl border border-dashed p-12 text-center bg-gradient-to-br from-base-950 to-base-900 border-ember-500/30 hover:border-ember-500/60 transition-all duration-300 shadow-sm"
       >
-        <TargetIcon className="w-10 h-10 mx-auto text-ash-500 mb-3" />
-        <p className="text-ash-400 text-sm font-medium">No targets due today.</p>
-        <p className="text-ash-600 text-xs mt-1">Create one to get the fire started!</p>
+        <div className="relative inline-block mb-4">
+          <TargetIcon className="w-12 h-12 text-ash-500" />
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-ember-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-[0_0_10px_rgba(234,63,12,0.8)]">+</div>
+        </div>
+        <p className="text-ash-200 text-lg font-semibold">No targets due today.</p>
+        <p className="text-ash-400 text-sm mt-1 max-w-[200px] mx-auto">Create a daily habit or task to get the fire started! 🔥</p>
       </motion.div>
     )
   }

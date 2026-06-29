@@ -10,7 +10,7 @@ import MoodTracker from '@/components/dashboard/MoodTracker'
 import AICopilot from '@/components/ai/AICopilot'
 import { useState, useEffect } from 'react'
 import { mlService } from '@/services/ml.service'
-import { AlertTriangle, ShieldCheck, Star, Zap, Trophy, Flame } from 'lucide-react'
+import { AlertTriangle, ShieldCheck, Star, Zap, Trophy, Flame, ChevronDown, ChevronUp, Info } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import toast from 'react-hot-toast'
@@ -43,6 +43,7 @@ export default function Dashboard() {
   const { data, isLoading, error, refresh } = useDashboard()
   const [showLevelUp, setShowLevelUp] = useState(false)
   const [prevLevel, setPrevLevel] = useState(user?.level ?? 1)
+  const [showInsights, setShowInsights] = useState(false)
 
   const firstName = user?.name?.split(' ')[0] ?? 'there'
   const todayQuote = MOTIVATIONAL_QUOTES[new Date().getDay() % MOTIVATIONAL_QUOTES.length]
@@ -126,54 +127,74 @@ export default function Dashboard() {
       )}
 
       {data && !isLoading && (
-        <div className="space-y-6">
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <StreakCard
-              currentStreak={data.current_streak}
-              longestStreak={data.longest_streak}
-              streakFreezes={data.streak_freezes || 0}
-            />
-            <ProgressCard
-              completed={data.completed_today}
-              total={data.total_today}
-              percentage={data.completion_percentage}
-            />
-          </motion.div>
+        <div className="space-y-8">
+          {/* GROUP A: Core Actions (Always visible) */}
+          <div className="space-y-6">
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <StreakCard
+                currentStreak={data.current_streak}
+                longestStreak={data.longest_streak}
+                streakFreezes={data.streak_freezes || 0}
+              />
+              <ProgressCard
+                completed={data.completed_today}
+                total={data.total_today}
+                percentage={data.completion_percentage}
+              />
+            </motion.div>
 
-          <RiskPredictorWidget />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              data-tour="today-targets"
+            >
+              <h2 className="font-display font-medium text-ash-100 mb-3 text-sm uppercase tracking-widest text-ash-500">Today's Targets</h2>
+              <TodayTargets targets={data.targets_today} onChange={refresh} />
+            </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-          >
-            <MoodTracker />
-          </motion.div>
+          {/* GROUP B: Insights & Analytics (Progressive Disclosure) */}
+          <div className="pt-4 border-t border-base-800/50">
+            <button
+              onClick={() => setShowInsights(!showInsights)}
+              className="w-full flex items-center justify-between p-4 rounded-xl bg-base-900/40 hover:bg-base-900/60 border border-base-800/50 transition-all text-ash-300 hover:text-ash-100 group"
+            >
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-ember-500" />
+                <span className="font-medium">View Detailed Insights & Analytics</span>
+              </div>
+              {showInsights ? <ChevronUp className="w-5 h-5 opacity-50 group-hover:opacity-100" /> : <ChevronDown className="w-5 h-5 opacity-50 group-hover:opacity-100" />}
+            </button>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            data-tour="today-targets"
-          >
-            <h2 className="font-display font-medium text-ash-100 mb-3 text-sm uppercase tracking-widest text-ash-500">Today's Targets</h2>
-            <TodayTargets targets={data.targets_today} onChange={refresh} />
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
-            <ActivityHeatmap />
-          </motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-            <AIRecommendations />
-          </motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
-            <AnalyticsCharts />
-          </motion.div>
+            <AnimatePresence>
+              {showInsights && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="space-y-6 pt-6">
+                    <RiskPredictorWidget />
+                    
+                    <MoodTracker />
+                    
+                    <ActivityHeatmap />
+                    
+                    <AIRecommendations />
+                    
+                    <AnalyticsCharts />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       )}
 
@@ -199,7 +220,12 @@ function RiskPredictorWidget() {
       <div className="flex items-center gap-3">
         {isHigh ? <AlertTriangle className="w-6 h-6 text-red-500 animate-pulse" /> : <ShieldCheck className="w-6 h-6 text-green-500" />}
         <div>
-          <h3 className={`font-bold text-sm ${isHigh ? 'text-red-400' : 'text-green-400'}`}>AI Streak Predictor</h3>
+          <h3 className={`font-bold text-sm flex items-center gap-1.5 ${isHigh ? 'text-red-400' : 'text-green-400'}`}>
+            AI Streak Predictor
+            <span title="Predicts likelihood of missing a target tomorrow based on your recent activity patterns, heatmaps, and mood." className="cursor-help">
+              <Info className="w-3.5 h-3.5 opacity-60 hover:opacity-100 transition-opacity" />
+            </span>
+          </h3>
           <p className="text-xs text-ash-400">{risk.message}</p>
         </div>
       </div>
