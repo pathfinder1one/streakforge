@@ -220,7 +220,7 @@ export default function Calendar() {
                     {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                   </h3>
                   <button
-                    onClick={() => navigate(`/targets/create?date=${selectedDate}`)}
+                    onClick={() => navigate(`/targets/new?date=${selectedDate}`)}
                     className="p-2 bg-ember-500/10 text-ember-400 hover:bg-ember-500 hover:text-white rounded-lg transition-colors border border-ember-500/20 hover:border-ember-500 shadow-sm"
                     title="Add Event"
                   >
