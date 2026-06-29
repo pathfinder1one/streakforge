@@ -1,143 +1,121 @@
 <div align="center">
-  <img src="./frontend/public/logo.png" alt="StreakForge Logo" width="150" height="150"/>
-  <h1>🔥 StreakForge</h1>
-  <p><strong>Where Deep Agentic AI Meets High-Stakes Gamification.</strong></p>
-  
-  <p>
-    <a href="#"><img src="https://img.shields.io/badge/Frontend-React%2018%20%7C%20Vite-61DAFB?logo=react&logoColor=white" alt="React" /></a>
-    <a href="#"><img src="https://img.shields.io/badge/Backend-FastAPI%20%7C%20Python%203.11-009688?logo=fastapi&logoColor=white" alt="FastAPI" /></a>
-    <a href="#"><img src="https://img.shields.io/badge/AI_Engine-Gemini%203.1%20Flash%20Lite-F4B400?logo=google&logoColor=white" alt="Gemini" /></a>
-    <a href="#"><img src="https://img.shields.io/badge/State-Zustand-443E38?logo=react&logoColor=white" alt="Zustand" /></a>
-    <a href="#"><img src="https://img.shields.io/badge/Deployment-Docker%20%7C%20Cloud%20Run-2496ED?logo=docker&logoColor=white" alt="Docker" /></a>
-  </p>
-  
-  <p>
-    <i>An AI-powered productivity ecosystem built to solve chronic procrastination through behavioral psychology and autonomous agentic workflows. Built for "The Last-Minute Life Saver" Hackathon.</i>
-  </p>
+
+<img src="./frontend/public/logo.png" alt="StreakForge Logo" width="120" />
+
+# 🔥 StreakForge
+
+**An AI-Powered Productivity Ecosystem built for the "Last-Minute Life Saver" Hackathon.**
+
+[![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Gemini](https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+
+> *"Users don't lack memory—they lack accountability. StreakForge fixes human procrastination by combining autonomous AI planning with the psychological power of Loss Aversion."*
+
 </div>
 
 ---
 
-## 📖 Table of Contents
-- [The Vision](#-the-vision)
-- [System Architecture](#-system-architecture)
-- [Core Mechanics & AI](#-core-mechanics--ai)
-- [Tech Stack](#-tech-stack)
-- [Local Development Setup](#-local-development-setup)
-- [Deployment (Docker & Cloud Run)](#-deployment)
+## ⚡ Why StreakForge? (The Innovation)
+
+Most productivity tools are passive. You set a task, and you ignore the reminder. 
+**StreakForge is Proactive & High-Stakes.** 
+
+1. **The Accountability Court:** Stake your hard-earned virtual XP/Coins on critical tasks. If you miss the midnight deadline, your smart contract breaches and you lose your progress.
+2. **Deep Agentic AI:** Speak to your AI Copilot. It doesn't just chat—it autonomously parses your goals, estimates time, creates a schedule, and **injects the tasks directly into your PostgreSQL database.**
 
 ---
 
-## 🔭 The Vision
+## 🏗️ System Architecture
 
-Most productivity software fails because it acts as a passive repository for tasks. Users easily dismiss notifications, leading to broken habits. 
+GitHub renders the diagram below dynamically to showcase our decoupled, scalable architecture.
 
-**StreakForge** replaces passive reminders with **Proactive Accountability**. By forcing users to pledge virtual currency on critical daily targets (The Accountability Court) and utilizing an onboard **Agentic AI Copilot** to autonomously break down overwhelming goals into manageable steps, StreakForge engineers success by mitigating cognitive overload and leveraging loss-aversion psychology.
+```mermaid
+graph TD
+    %% Styling
+    classDef frontend fill:#282c34,stroke:#61dafb,stroke-width:2px,color:#fff
+    classDef backend fill:#0f3f33,stroke:#009688,stroke-width:2px,color:#fff
+    classDef ai fill:#2f153a,stroke:#d93025,stroke-width:2px,color:#fff
+    classDef db fill:#1a365d,stroke:#3182ce,stroke-width:2px,color:#fff
 
----
+    %% Nodes
+    Client[("💻 Client (React 18 + Vite)\nZustand State, Framer Motion")]:::frontend
+    API["⚙️ FastAPI Backend\n(Async, Python 3.11)"]:::backend
+    Gemini["🤖 Google Gemini 3.1 Flash\n(AI Studio / Vertex AI)"]:::ai
+    DB[("🗄️ Database\n(SQLite/PostgreSQL)")]:::db
 
-## 🏗 System Architecture
-
-StreakForge is a decoupled, modern web application utilizing a RESTful architecture, built for scalability and low-latency AI interactions.
-
-<details>
-<summary><b>Click to view Architecture Details</b></summary>
-
-- **Frontend (Client):** Single Page Application (SPA) built with React 18 and Vite. State is managed deterministically via `Zustand`. Styling is handled via highly optimized Tailwind CSS with Framer Motion for 60fps micro-animations.
-- **Backend (API):** High-performance asynchronous backend built with FastAPI and Uvicorn. Implements secure JWT-based authentication.
-- **Database Layer:** SQLAlchemy ORM interfacing with SQLite (local/dev) or PostgreSQL (production). 
-- **AI Integration Layer:** Direct integration with Google's Vertex AI / AI Studio using the `gemini-3.1-flash-lite` model for ultra-low latency conversational agents and structured JSON generation.
-- **Evaluation Engine (Lazy Loading):** Timezone-aware streak computation is handled via "Lazy Evaluation" upon dashboard initialization, ensuring highly accurate contract breach execution regardless of the user's localized GMT offset without requiring heavy cron-jobs.
-</details>
-
----
-
-## 🧠 Core Mechanics & AI
-
-### 1. Autonomous Agentic Copilot
-Unlike traditional chatbots, StreakForge's Copilot possesses **Agentic Depth**. It doesn't just offer advice; it takes action. When a user requests a study plan via **Voice Input** or text, the AI parses the intent, generates a structured schedule, and autonomously injects the tasks directly into the PostgreSQL database.
-
-### 2. Context-Aware Risk Predictor
-The backend utilizes historical session data to compute a statistical "Breach Risk" score. If a user is predicted to break their streak, the system triggers proactive, personalized nudges formulated dynamically by the AI.
-
-### 3. The Accountability Court (Smart Contracts)
-High-stakes gamification. Users stake their virtual currency (`coins`) on high-priority targets. If the midnight deadline (calculated strictly on the user's local timezone offset) is missed, a contract breach occurs, penalizing the user's XP and economy.
-
-### 4. Progressive Disclosure UI
-To prevent cognitive overload, complex analytics like GitHub-style Contribution Heatmaps, multi-axis Mood Tracking, and XP progression curves are dynamically lazy-loaded and hidden behind collapsible interfaces.
-
----
-
-## 💻 Tech Stack
-
-| Domain | Technologies |
-|---|---|
-| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS, Zustand, Framer Motion, Lucide Icons, Web Speech API |
-| **Backend** | Python 3.11, FastAPI (Async), SQLAlchemy ORM, Pydantic, Passlib (Bcrypt), PyJWT |
-| **AI / ML** | Google Gemini 3.1 Flash Lite (Generative AI), Scikit-Learn concepts (Risk Predictor) |
-| **Infrastructure** | Docker, Google Cloud Run, Railway |
-
----
-
-## 🚀 Local Development Setup
-
-We highly recommend using Python 3.11+ and Node 18+ for local development.
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/pathfinder1one/streakforge.git
-cd streakforge
+    %% Connections
+    Client -- "REST API (JSON)\nJWT Auth" --> API
+    API -- "CRUD Operations\n(SQLAlchemy ORM)" --> DB
+    API -- "Multi-Turn Memory\n& Agentic Prompts" --> Gemini
+    Gemini -- "Structured JSON\n(Tasks & Nudges)" --> API
+    
+    %% Async Job
+    Scheduler["⏰ Lazy Evaluation Engine\n(Timezone Aware)"]:::backend
+    Scheduler -. "Evaluates Midnight Breaches" .-> DB
 ```
 
-### 2. Backend Setup
-The backend runs on port `8000`.
+---
+
+## 🔮 Core Agentic Capabilities
+
+| Feature | Description | Google Tech Used |
+| :--- | :--- | :--- |
+| **Autonomous Planning** | Users prompt the AI to plan their day. The AI breaks down tasks, assigns priorities, and injects them straight into the UI/DB. | `Gemini 3.1 Flash Lite` |
+| **Risk Predictor** | Machine learning analyzes historical completion rates. If a user is at risk of breaking a streak, the AI generates a proactive nudge. | `Gemini Data Processing` |
+| **Voice Copilot** | Users can interact with the AI completely hands-free using real-time voice transcription. | `Web Speech API` |
+
+---
+
+## 📂 Project Structure
+
+```text
+📦 streakforge
+ ┣ 📂 backend/               # FastAPI Application
+ ┃ ┣ 📂 app/
+ ┃ ┃ ┣ 📂 api/               # REST API endpoints (Routers)
+ ┃ ┃ ┣ 📂 core/              # Security, JWT, Database Config
+ ┃ ┃ ┣ 📂 ml/                # Risk Prediction Logic
+ ┃ ┃ ┣ 📂 models/            # SQLAlchemy Database Schemas
+ ┃ ┃ ┗ 📂 services/          # Core Business Logic & AI Integrations
+ ┃ ┣ 📜 Dockerfile           # Multi-stage build for Cloud Run
+ ┃ ┗ 📜 requirements.txt
+ ┣ 📂 frontend/              # React 18 SPA
+ ┃ ┣ 📂 src/
+ ┃ ┃ ┣ 📂 components/        # Reusable UI components & AI Copilot Widget
+ ┃ ┃ ┣ 📂 store/             # Zustand State Management
+ ┃ ┃ ┗ 📂 services/          # Axios API clients
+ ┃ ┗ 📜 package.json
+ ┗ 📜 README.md
+```
+
+---
+
+## 🚀 Quick Start Guide
+
+### 1. Boot the API (Backend)
 ```bash
 cd backend
 python -m venv venv
-
-# Activate Virtual Environment
-source venv/bin/activate  # macOS/Linux
-venv\Scripts\activate     # Windows
-
-# Install dependencies
+source venv/bin/activate
 pip install -r requirements.txt
 
-# Configure Environment
-cp .env.example .env
-# Important: Add your GEMINI_API_KEY in the .env file!
-
-# Boot the API
+# Add GEMINI_API_KEY to your .env file
 uvicorn app.main:app --reload --port 8000
 ```
 
-### 3. Frontend Setup
-The frontend runs on port `5173`.
+### 2. Boot the Client (Frontend)
 ```bash
 cd frontend
 npm install
-
-# Connect to local backend
-echo "VITE_API_URL=http://localhost:8000/api" > .env.local
-
-# Boot the Dev Server
 npm run dev
 ```
+Navigate to `http://localhost:5173`.
 
 ---
 
-## 🐳 Deployment
-
-StreakForge is fully Dockerized and ready for PaaS platforms like Google Cloud Run or Railway. The `Dockerfile` implements a multi-stage build, compiling the React assets and serving them statically via FastAPI to ensure a single, highly efficient container.
-
-```bash
-# Build the production image
-docker build -t streakforge:latest .
-
-# Run the production container
-docker run -p 8000:8000 --env-file backend/.env streakforge:latest
-```
-
----
 <div align="center">
-  <i>Built with dedication for the Last-Minute Life Saver Hackathon.</i>
+  <h3>✨ Built for the Hackathon ✨</h3>
+  <p>Ready for production deployment on Google Cloud Run.</p>
 </div>
