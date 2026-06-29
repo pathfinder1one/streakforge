@@ -37,6 +37,35 @@ You don't just create tasks; you pledge virtual coins on them. If you miss your 
 
 ---
 
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    %% Styling
+    classDef frontend fill:#282c34,stroke:#61dafb,stroke-width:2px,color:#fff
+    classDef backend fill:#0f3f33,stroke:#009688,stroke-width:2px,color:#fff
+    classDef ai fill:#2f153a,stroke:#d93025,stroke-width:2px,color:#fff
+    classDef db fill:#1a365d,stroke:#3182ce,stroke-width:2px,color:#fff
+
+    %% Nodes
+    Client[("💻 Client (React 18 + Vite)\nZustand State, Framer Motion")]:::frontend
+    API["⚙️ FastAPI Backend\n(Async, Python 3.11)"]:::backend
+    Gemini["🤖 Google Gemini 3.1 Flash\n(AI Studio / Vertex AI)"]:::ai
+    DB[("🗄️ Database\n(SQLite/PostgreSQL)")]:::db
+
+    %% Connections
+    Client -- "REST API (JSON)\nJWT Auth" --> API
+    API -- "CRUD Operations\n(SQLAlchemy ORM)" --> DB
+    API -- "Multi-Turn Memory\n& Agentic Prompts" --> Gemini
+    Gemini -- "Structured JSON\n(Tasks & Nudges)" --> API
+    
+    %% Async Job
+    Scheduler["⏰ Lazy Evaluation Engine\n(Timezone Aware)"]:::backend
+    Scheduler -. "Evaluates Midnight Breaches" .-> DB
+```
+
+---
+
 ## 💻 Tech Stack
 
 - **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Zustand, Framer Motion
